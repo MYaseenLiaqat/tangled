@@ -5,6 +5,8 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from sqlmodel import Session, select
 from ..config import settings
+from ..adapters.files import LocalFileStorage
+from ..adapters.jobs import FastAPIJobs
 from ..db import session
 from ..deps import current_student
 from ..models import Concept, Material, Message, Student
@@ -63,7 +65,7 @@ async def chat(b: ChatIn, bg: BackgroundTasks, st: Student = Depends(current_stu
     s.commit()
     s.refresh(m)
     if concept:
-        bg.add_task(analysis.analyze, m.id)   # confusion analysis never delays the student's answer
+        FastAPIJobs(bg).enqueue(analysis.analyze, m.id)
     return {"message_id": m.id, "answer": answer, "sources": sources}
 
 

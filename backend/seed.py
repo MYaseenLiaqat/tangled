@@ -1,6 +1,6 @@
 """python seed.py  ->  creates the course concepts and 24 student codes."""
 from sqlmodel import Session, select
-from app.db import engine, init
+from app.db import engine, migrate
 from app.models import Concept, Student
 import secrets
 
@@ -17,7 +17,7 @@ CONCEPTS = [
 ]
 
 if __name__ == "__main__":
-    init()
+    migrate()
     with Session(engine) as s:
         for k, n, m, d in CONCEPTS:
             if not s.exec(select(Concept).where(Concept.key == k)).first():

@@ -1,6 +1,7 @@
 """Retrieval + grounded answering. Chroma and the embedding model load lazily."""
 from collections import defaultdict
 from ..config import settings
+from ..adapters.chroma import ChromaVectorStore
 from . import llm
 
 _ef = None
@@ -21,18 +22,12 @@ def ef():
 def col():
     global _col
     if _col is None:
-        import chromadb
-        _col = chromadb.PersistentClient(path=settings.chroma_dir).get_or_create_collection(
-            "materials", embedding_function=ef(), metadata={"hnsw:space": "cosine"})
+        _col = ChromaVectorStore()
     return _col
 
 
 def retrieve(q: str, k: int = 4) -> list[dict]:
-    c = col()
-    if c.count() == 0:
-        return []
-    r = c.query(query_texts=[q], n_results=min(k, c.count()))
-    return [{"text": d, "meta": m, "sim": 1 - x} for d, m, x in zip(r["documents"][0], r["metadatas"][0], r["distances"][0])]
+    return col().query(q, k)
 
 
 def topic_of(hits: list[dict]) -> str | None:
