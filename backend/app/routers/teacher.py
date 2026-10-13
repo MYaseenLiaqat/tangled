@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from pydantic import BaseModel
 from sqlmodel import Session, select
 from ..config import settings
+from ..adapters.files import LocalFileStorage
 from ..db import session
 from ..deps import teacher_auth
 from ..models import Concept, Material, QuizItem, QuizResponse, Student, Verdict
@@ -58,9 +59,7 @@ def upload(files: list[UploadFile], s: Session = Depends(session)):
         data = f.file.read()
         m = Material(filename=f.filename, kind=KIND[ext], size_kb=max(1, len(data) // 1024), status="processing")
         s.add(m); s.commit(); s.refresh(m)
-        p = Path(settings.upload_dir) / f"{m.id}_{f.filename}"
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_bytes(data)
+        p = LocalFileStorage().save(f"{m.id}_{f.filename}", data)
         m.chunks = ingest(p, m.id, concepts)   # synchronous for the pilot; move to a job queue if files get large
         m.status = "indexed"
         s.add(m); s.commit(); out.append(m)

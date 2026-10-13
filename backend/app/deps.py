@@ -6,7 +6,7 @@ from .models import Student
 
 
 def teacher_auth(authorization: str = Header(default="")) -> None:
-    if authorization != f"Bearer {settings.teacher_token}":
+    if authorization not in (settings.teacher_token, f"Bearer {settings.teacher_token}"):
         raise HTTPException(401, "Invalid teacher token")
 
 

@@ -76,5 +76,5 @@ def ingest(path: Path, material_id: int, concepts: list) -> int:
         for i, m in enumerate(metas):
             j = int(sims[i].argmax())
             m["concept"] = concepts[j].key if sims[i, j] >= 0.25 else ""
-    rag.col().add(ids=[f"m{material_id}-{i}" for i in range(len(docs))], documents=docs, embeddings=emb.tolist(), metadatas=metas)
+    rag.col().add([f"m{material_id}-{i}" for i in range(len(docs))], docs, emb.tolist(), metas)
     return len(docs)

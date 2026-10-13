@@ -7,7 +7,8 @@ _client: AsyncOpenAI | None = None
 def _c() -> AsyncOpenAI:
     global _client
     if _client is None:
-        _client = AsyncOpenAI(api_key=settings.llm_api_key or "missing", base_url=settings.llm_base_url)
+        _client = AsyncOpenAI(api_key=settings.llm_api_key or "missing", base_url=settings.llm_base_url,
+                              timeout=settings.llm_timeout, max_retries=settings.llm_max_retries)
     return _client
 
 
