@@ -1,8 +1,7 @@
 """python seed.py  ->  creates the course concepts and 24 student codes."""
 from sqlmodel import Session, select
 from app.db import engine, migrate
-from app.models import Concept, Student
-import secrets
+from app.models import Concept
 
 CONCEPTS = [
     ("numpy", "NumPy arrays", "Module 1 · Unit 3", "NumPy arrays, shapes, broadcasting, axis, reshape, slicing, views and copies"),
@@ -22,10 +21,5 @@ if __name__ == "__main__":
         for k, n, m, d in CONCEPTS:
             if not s.exec(select(Concept).where(Concept.key == k)).first():
                 s.add(Concept(key=k, name=n, module=m, description=d))
-        if not s.exec(select(Student)).first():
-            codes = [secrets.token_hex(3).upper() for _ in range(24)]
-            for c in codes:
-                s.add(Student(code=c))
-            print("Student codes:", ", ".join(codes))
         s.commit()
     print("Seeded.")
