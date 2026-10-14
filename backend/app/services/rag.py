@@ -1,8 +1,11 @@
 """Retrieval + grounded answering. Chroma and the embedding model load lazily."""
 from collections import defaultdict
+import logging
 from ..config import settings
 from ..adapters.chroma import ChromaVectorStore
 from . import llm
+
+logger = logging.getLogger("tangled.rag")
 
 _ef = None
 _col = None
@@ -31,13 +34,21 @@ def col():
     return _col
 
 
-def retrieve(course_id: int, q: str, k: int = 4) -> list[dict]:
-    return col().query(course_id, q, k)
+def retrieve(course_id: int, q: str, k: int | None = None) -> list[dict]:
+    return col().query(course_id, q, k if k is not None else settings.rag_top_k)
+
+
+def grounding_refused(hits: list[dict]) -> bool:
+    best = hits[0]["sim"] if hits else 0.0
+    refused = not hits or best < settings.min_similarity
+    logger.debug("rag_grounding chunks=%d best_similarity=%.4f threshold_refused=%s",
+                 len(hits), best, refused)
+    return refused
 
 
 def topic_of(hits: list[dict]) -> str | None:
     """Topic = the course concept the retrieved passages belong to (weighted by similarity)."""
-    if not hits or hits[0]["sim"] < settings.min_similarity:
+    if grounding_refused(hits):
         return None
     w: dict[str, float] = defaultdict(float)
     for h in hits:

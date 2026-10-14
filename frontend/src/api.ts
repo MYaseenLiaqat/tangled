@@ -34,6 +34,7 @@ export const api = {
   studentMaterials: () => req("/student/materials", {}, studentToken()),
   chat: (text: string, sessionId: string) => req("/student/chat", { method: "POST", body: JSON.stringify({ text, session_id: sessionId }) }, studentToken()),
   feedback: (messageId: number, value: string) => req("/student/feedback", { method: "POST", body: JSON.stringify({ message_id: messageId, value }) }, studentToken()),
+  studentMessages: () => req("/student/messages", {}, studentToken()),
   topics: (): Promise<any> => Promise.reject(new Error("Legacy topics page is disabled")),
   topic: (_id: string): Promise<any> => Promise.reject(new Error("Legacy topic page is disabled")),
   verdict: (_id: number, _value: string): Promise<any> => Promise.reject(new Error("Insights are disabled until a later phase")),
