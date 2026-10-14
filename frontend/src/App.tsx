@@ -3,6 +3,8 @@ import { Link, Outlet, Route, Routes, useNavigate, useParams } from "react-route
 import { api } from "./api";
 import TopicsSetup from "./pages/TopicsSetup";
 import CourseMaterials from "./pages/CourseMaterials";
+import Join from "./pages/Join";
+import Student from "./pages/Student";
 
 function Auth() {
   const navigate = useNavigate();
@@ -68,6 +70,7 @@ function Course() {
 
 export default function App() {
   return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<Courses />} />
+    <Route path="/join/:code" element={<Join />} /><Route path="/student" element={<Student />} />
     <Route path="/courses/:id" element={<Course />} /><Route path="/courses/:id/topics" element={<TopicsSetup />} />
     <Route path="/courses/:id/materials" element={<CourseMaterials />} /></Routes>;
 }

@@ -37,19 +37,8 @@ def logreg(text: str) -> dict:
 
 
 async def analyze(message_id: int) -> None:
-    with Session(engine) as s:
-        m = s.get(Message, message_id)
-        if not m or m.intent:
-            return
-        hits = await asyncio.to_thread(rag.retrieve, m.text, 1)
-        try:
-            r = await judge(m.text, hits[0]["text"] if hits else "") if settings.intent_backend == "llm" else await asyncio.to_thread(logreg, m.text)
-        except Exception:
-            return  # left unlabelled; a batch job can retry later
-        phrase = r.get("evidence_phrase") or ""
-        m.intent = r.get("intent") if r.get("intent") in ("confusion", "information", "other") else "other"
-        m.intent_conf = float(r.get("confidence") or 0)
-        m.misconception = bool(r.get("misconception"))
-        m.phrase = phrase if phrase and phrase in m.text else ""
-        s.add(m)
-        s.commit()
+    return
+
+
+async def noop(message_id: int) -> None:
+    return

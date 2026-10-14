@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import text
 from .config import settings
 from .db import engine, migrate
-from .routers import auth, courses
+from .routers import auth, courses, student
 
 
 class JsonFormatter(logging.Formatter):
@@ -45,6 +45,7 @@ async def request_logging(request: Request, call_next):
 
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(courses.router, prefix="/api/v1/courses", tags=["courses"])
+app.include_router(student.router, prefix="/api/v1/student", tags=["student"])
 
 
 @app.get("/health/live")

@@ -27,7 +27,7 @@ class Credentials(BaseModel):
 
 def token_for(instructor: Instructor) -> str:
     now = datetime.now(timezone.utc)
-    return jwt.encode({"sub": str(instructor.id), "iat": now, "exp": now + timedelta(hours=12)},
+    return jwt.encode({"sub": str(instructor.id), "role": "instructor", "iat": now, "exp": now + timedelta(hours=12)},
                       settings.jwt_secret, algorithm="HS256")
 
 

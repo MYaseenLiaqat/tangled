@@ -1,80 +1,143 @@
 import asyncio
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from openai import APIError, APITimeoutError
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from sqlmodel import Session, select
-from ..config import settings
-from ..adapters.files import LocalFileStorage
 from ..adapters.jobs import FastAPIJobs
+from ..config import settings
 from ..db import session
 from ..deps import current_student
-from ..models import Concept, Material, Message, Student
-from ..services import analysis, rag
+from ..models import Concept, Course, Material, Message, Student
+from ..services import rag
+from ..services import analysis
+from ..services.tokens import signed_material_url, student_token, valid_material_signature
 
 router = APIRouter()
 
 
-class Login(BaseModel):
-    code: str
+class JoinIn(BaseModel):
+    code: str = Field(min_length=6, max_length=6)
+    consent: bool
 
 
 class ChatIn(BaseModel):
-    text: str = Field(min_length=1, max_length=1000)
-    session_id: str = ""
+    text: str = Field(min_length=1, max_length=settings.max_chat_input_chars)
+    session_id: str = Field(default="", max_length=100)
 
 
 class FeedbackIn(BaseModel):
     message_id: int
-    value: str  # clear | unclear
+    value: str
 
 
-@router.post("/login")
-def login(b: Login, s: Session = Depends(session)):
-    if not s.exec(select(Student).where(Student.code == b.code)).first():
-        raise HTTPException(401, "Unknown student code")
-    return {"ok": True}
+@router.get("/join/{code}")
+def join_info(code: str, s: Session = Depends(session)):
+    course = s.exec(select(Course).where(Course.join_code == code.upper())).first()
+    if not course:
+        raise HTTPException(404, "Course not found")
+    return {"name": course.name, "joining_open": course.joining_open}
+
+
+@router.post("/join")
+def join(body: JoinIn, s: Session = Depends(session)):
+    if not body.consent:
+        raise HTTPException(400, "Consent is required")
+    course = s.exec(select(Course).where(Course.join_code == body.code.upper())).first()
+    if not course:
+        raise HTTPException(404, "Course not found")
+    if not course.joining_open:
+        raise HTTPException(403, "Joining is closed")
+    student = Student(course_id=course.id, consent_version=settings.consent_version)
+    s.add(student)
+    s.commit()
+    s.refresh(student)
+    return {"access_token": student_token(student.id, course.id), "token_type": "bearer",
+            "course_id": course.id, "course_name": course.name}
+
+
+def student_material(material: Material, student: Student) -> dict:
+    return {"id": material.id, "filename": material.filename, "kind": material.kind,
+            "size_kb": material.size_kb, "status": material.status, "chunks": material.chunks,
+            "error": material.error, "file_url": signed_material_url(material.id, student.id)
+            if material.kind == "PDF" and material.status == "indexed" else None}
 
 
 @router.get("/materials")
-def materials(_: Student = Depends(current_student), s: Session = Depends(session)):
-    return [{"id": m.id, "filename": m.filename, "kind": m.kind, "size_kb": m.size_kb} for m in s.exec(select(Material)).all()]
+def materials(st: Student = Depends(current_student), s: Session = Depends(session)):
+    rows = s.exec(select(Material).where(Material.course_id == st.course_id)).all()
+    return [student_material(material, st) for material in rows]
 
 
-@router.get("/materials/{mid}/file")
-def material_file(mid: int, code: str, s: Session = Depends(session)):
-    # the code is a query parameter because iframes cannot send custom headers
-    if not s.exec(select(Student).where(Student.code == code)).first():
-        raise HTTPException(401, "Unknown student code")
-    m = s.get(Material, mid)
-    p = Path(settings.upload_dir) / f"{mid}_{m.filename}" if m else None
-    if not p or not p.exists():
-        raise HTTPException(404)
-    return FileResponse(p, filename=m.filename)
+@router.get("/materials/{material_id}/file")
+def material_file(material_id: int, student_id: int = Query(...), expires: int = Query(...),
+                  signature: str = Query(...), s: Session = Depends(session)):
+    if not valid_material_signature(material_id, student_id, expires, signature):
+        raise HTTPException(401, "Invalid or expired file URL")
+    material = s.get(Material, material_id)
+    if not material or material.status != "indexed":
+        raise HTTPException(404, "Material not found")
+    student = s.get(Student, student_id)
+    if not student or student.course_id != material.course_id:
+        raise HTTPException(404, "Material not found")
+    path = Path(settings.upload_dir) / f"{material.id}_{material.filename}"
+    if not path.exists():
+        raise HTTPException(404, "Material file not found")
+    return FileResponse(path, filename=material.filename)
+
+
+def enforce_rate_limit(student: Student, s: Session) -> None:
+    since = datetime.now(timezone.utc) - timedelta(minutes=1)
+    count = len(s.exec(select(Message).where(Message.student_id == student.id,
+                                             Message.course_id == student.course_id,
+                                             Message.created_at >= since)).all())
+    if count >= settings.rate_limit_per_min:
+        raise HTTPException(429, "Please wait before sending another question")
 
 
 @router.post("/chat")
-async def chat(b: ChatIn, bg: BackgroundTasks, st: Student = Depends(current_student), s: Session = Depends(session)):
-    hits = await asyncio.to_thread(rag.retrieve, b.text)   # blocking vector search kept off the event loop
-    answer, sources = await rag.answer(b.text, hits)
-    key = rag.topic_of(hits)
-    concept = s.exec(select(Concept).where(Concept.key == key)).first() if key else None
-    m = Message(student_id=st.id, session_id=b.session_id, text=b.text, answer=answer, concept_id=concept.id if concept else None,
-                similarity=hits[0]["sim"] if hits else 0.0, intent="" if concept else "gap")  # no topic match = possible material gap
-    s.add(m)
+async def chat(body: ChatIn, background: BackgroundTasks,
+               st: Student = Depends(current_student), s: Session = Depends(session)):
+    enforce_rate_limit(st, s)
+    hits = await asyncio.to_thread(rag.retrieve, st.course_id, body.text)
+    similarity = hits[0]["sim"] if hits else 0.0
+    topic_key = rag.topic_of(hits)
+    concept = s.exec(select(Concept).where(Concept.course_id == st.course_id,
+                                             Concept.key == topic_key)).first() if topic_key else None
+    if not hits or similarity < settings.min_similarity:
+        message = Message(course_id=st.course_id, student_id=st.id, session_id=body.session_id,
+                          text=body.text, answer=rag.REFUSAL, concept_id=None,
+                          similarity=similarity, intent="gap")
+        s.add(message)
+        s.commit()
+        s.refresh(message)
+        return {"message_id": message.id, "answer": rag.REFUSAL, "sources": []}
+    try:
+        answer, sources = await rag.answer(body.text, hits)
+    except (APIError, APITimeoutError, ConnectionError, TimeoutError):
+        raise HTTPException(503, "The tutor is temporarily unavailable. Please try again.")
+    message = Message(course_id=st.course_id, student_id=st.id, session_id=body.session_id,
+                      text=body.text, answer=answer, concept_id=concept.id if concept else None,
+                      similarity=similarity, intent="" if concept else "gap")
+    s.add(message)
     s.commit()
-    s.refresh(m)
-    if concept:
-        FastAPIJobs(bg).enqueue(analysis.analyze, m.id)
-    return {"message_id": m.id, "answer": answer, "sources": sources}
+    s.refresh(message)
+    FastAPIJobs(background).enqueue(analysis.noop, message.id)
+    return {"message_id": message.id, "answer": answer, "sources": sources}
 
 
 @router.post("/feedback")
-def feedback(b: FeedbackIn, st: Student = Depends(current_student), s: Session = Depends(session)):
-    m = s.get(Message, b.message_id)
-    if not m or m.student_id != st.id or b.value not in ("clear", "unclear"):
-        raise HTTPException(400)
-    m.feedback = b.value
-    s.add(m)
+def feedback(body: FeedbackIn, st: Student = Depends(current_student), s: Session = Depends(session)):
+    if body.value not in ("clear", "unclear"):
+        raise HTTPException(400, "Invalid feedback")
+    message = s.exec(select(Message).where(Message.id == body.message_id,
+                                            Message.student_id == st.id,
+                                            Message.course_id == st.course_id)).first()
+    if not message:
+        raise HTTPException(404, "Message not found")
+    message.feedback = body.value
+    s.add(message)
     s.commit()
     return {"ok": True}

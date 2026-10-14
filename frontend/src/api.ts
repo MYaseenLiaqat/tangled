@@ -1,7 +1,9 @@
-const token = () => localStorage.getItem("instructor_token") || "";
+const instructorToken = () => localStorage.getItem("instructor_token") || "";
+const studentToken = () => localStorage.getItem("student_token") || "";
 
-async function req<T = any>(path: string, opts: RequestInit = {}): Promise<T> {
-  const headers: Record<string, string> = { Authorization: `Bearer ${token()}` };
+async function req<T = any>(path: string, opts: RequestInit = {}, token = instructorToken()): Promise<T> {
+  const headers: Record<string, string> = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
   if (opts.body && !(opts.body instanceof FormData)) headers["Content-Type"] = "application/json";
   const response = await fetch(`/api/v1${path}`, { ...opts, headers: { ...headers, ...opts.headers } });
   if (!response.ok) throw new Error((await response.text()) || response.statusText);
@@ -27,16 +29,16 @@ export const api = {
     return req(`/courses/${id}/materials`, { method: "POST", body: form });
   },
   deleteMaterial: (courseId: string, materialId: number) => req(`/courses/${courseId}/materials/${materialId}`, { method: "DELETE" }),
-  topics: (): Promise<any> => Promise.reject(new Error("Topics are disabled until Phase 3")),
-  topic: (_id: string): Promise<any> => Promise.reject(new Error("Topics are disabled until Phase 3")),
-  verdict: (_id: number, _verdict: string): Promise<any> => Promise.reject(new Error("Topics are disabled until Phase 3")),
-  materials: (): Promise<any> => Promise.reject(new Error("Materials are disabled until Phase 3")),
-  upload: (_files: FileList): Promise<any> => Promise.reject(new Error("Materials are disabled until Phase 3")),
+  joinInfo: (code: string) => req(`/student/join/${code}`, {}, ""),
+  join: (code: string) => req("/student/join", { method: "POST", body: JSON.stringify({ code, consent: true }) }, ""),
+  studentMaterials: () => req("/student/materials", {}, studentToken()),
+  chat: (text: string, sessionId: string) => req("/student/chat", { method: "POST", body: JSON.stringify({ text, session_id: sessionId }) }, studentToken()),
+  feedback: (messageId: number, value: string) => req("/student/feedback", { method: "POST", body: JSON.stringify({ message_id: messageId, value }) }, studentToken()),
+  topics: (): Promise<any> => Promise.reject(new Error("Legacy topics page is disabled")),
+  topic: (_id: string): Promise<any> => Promise.reject(new Error("Legacy topic page is disabled")),
+  verdict: (_id: number, _value: string): Promise<any> => Promise.reject(new Error("Insights are disabled until a later phase")),
+  materials: (): Promise<any> => Promise.reject(new Error("Legacy materials page is disabled")),
+  upload: (_files: FileList): Promise<any> => Promise.reject(new Error("Legacy materials page is disabled")),
   quiz: (): Promise<any> => Promise.reject(new Error("Quiz is disabled until a later phase")),
   importQuiz: (_file: File): Promise<any> => Promise.reject(new Error("Quiz is disabled until a later phase")),
-  sMaterials: (): Promise<any> => Promise.reject(new Error("Student join is disabled until Phase 4")),
-  chat: (_text: string, _sessionId: string): Promise<any> => Promise.reject(new Error("Student chat is disabled until Phase 4")),
-  feedback: (_messageId: number, _value: string): Promise<any> => Promise.reject(new Error("Student chat is disabled until Phase 4")),
 };
-
-export const studentCode = () => "";
