@@ -51,15 +51,40 @@ function Courses() {
 function Course() {
   const { id = "" } = useParams();
   const [course, setCourse] = useState<any>();
+  const [copied, setCopied] = useState<"link" | "code" | "">("");
+  const [copyFallback, setCopyFallback] = useState(false);
+  const [copyMessage, setCopyMessage] = useState("");
   useEffect(() => { api.course(id).then(setCourse); }, [id]);
   if (!course) return <main className="landing"><p>Loading...</p></main>;
   async function toggle() { setCourse(await api.updateCourse(id, { joining_open: !course.joining_open })); }
   async function regenerate() { setCourse(await api.regenerateCode(id)); }
+  async function copy(value: string, kind: "link" | "code", elementId: string) {
+    setCopyFallback(false);
+    try {
+      if (!navigator.clipboard) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(value);
+      setCopyMessage("Copied");
+    } catch {
+      const element = document.getElementById(elementId);
+      if (element) {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+      }
+      setCopyMessage("Press Ctrl+C to copy");
+      setCopyFallback(true);
+    }
+    setCopied(kind);
+    window.setTimeout(() => { setCopied(""); setCopyFallback(false); setCopyMessage(""); }, 2000);
+  }
   const link = `${window.location.origin}${course.join_link}`;
   return <main className="landing"><p><Link to="/courses">All courses</Link></p><h1>{course.name}</h1>
-    <div className="panel"><h2>Student join</h2><p>Code: <b>{course.join_code}</b></p><p>{link}</p>
-      <button className="btn" onClick={() => navigator.clipboard.writeText(link)}>Copy link</button>
-      <button className="btn" onClick={() => navigator.clipboard.writeText(course.join_code)}>Copy code</button>
+    <div className="panel"><h2>Student join</h2><p id="join-code">Code: <b>{course.join_code}</b></p><p id="join-link">{link}</p>
+      <button className="btn" onClick={() => copy(link, "link", "join-link")}>{copied === "link" ? (copyFallback ? "Press Ctrl+C to copy" : "Copied") : "Copy link"}</button>
+      <button className="btn" onClick={() => copy(course.join_code, "code", "join-code")}>{copied === "code" ? (copyFallback ? "Press Ctrl+C to copy" : "Copied") : "Copy code"}</button>
+      <p className="mute" aria-live="polite">{copyMessage}</p>
       <button className="btn" onClick={regenerate}>Regenerate code</button>
       <button className="btn p" onClick={toggle}>{course.joining_open ? "Close joining" : "Open joining"}</button>
       <p className="mute">Joining is {course.joining_open ? "open" : "closed"}.</p>

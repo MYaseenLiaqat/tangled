@@ -85,7 +85,8 @@ def material_file(material_id: int, student_id: int = Query(...), expires: int =
     path = Path(settings.upload_dir) / f"{material.id}_{material.filename}"
     if not path.exists():
         raise HTTPException(404, "Material file not found")
-    return FileResponse(path, filename=material.filename)
+    return FileResponse(path, filename=material.filename, media_type="application/pdf",
+                        content_disposition_type="inline")
 
 
 def enforce_rate_limit(student: Student, s: Session) -> None:
@@ -106,7 +107,7 @@ async def chat(body: ChatIn, background: BackgroundTasks,
     topic_key = rag.topic_of(hits)
     concept = s.exec(select(Concept).where(Concept.course_id == st.course_id,
                                              Concept.key == topic_key)).first() if topic_key else None
-    if not hits or similarity < settings.min_similarity:
+    if rag.grounding_refused(hits):
         message = Message(course_id=st.course_id, student_id=st.id, session_id=body.session_id,
                           text=body.text, answer=rag.REFUSAL, concept_id=None,
                           similarity=similarity, intent="gap")
@@ -126,6 +127,15 @@ async def chat(body: ChatIn, background: BackgroundTasks,
     s.refresh(message)
     FastAPIJobs(background).enqueue(analysis.noop, message.id)
     return {"message_id": message.id, "answer": answer, "sources": sources}
+
+
+@router.get("/messages")
+def messages(st: Student = Depends(current_student), s: Session = Depends(session)):
+    rows = s.exec(select(Message).where(Message.student_id == st.id,
+                                        Message.course_id == st.course_id)
+                 .order_by(Message.created_at)).all()
+    return [{"message_id": row.id, "question": row.text, "answer": row.answer,
+             "feedback": row.feedback} for row in rows]
 
 
 @router.post("/feedback")

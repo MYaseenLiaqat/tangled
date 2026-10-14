@@ -14,7 +14,8 @@ class Settings(BaseSettings):
     llm_model: str = "gpt-4o-mini"
     llm_timeout: float = 30.0
     llm_max_retries: int = 1
-    min_similarity: float = 0.30
+    min_similarity: float = 0.25
+    rag_top_k: int = 4
     intent_backend: str = "llm"    # llm | logreg
     intent_model_path: str = "./data/intent.joblib"
     min_conf: float = 0.70
