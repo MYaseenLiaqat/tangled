@@ -1,6 +1,8 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, Outlet, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { api } from "./api";
+import TopicsSetup from "./pages/TopicsSetup";
+import CourseMaterials from "./pages/CourseMaterials";
 
 function Auth() {
   const navigate = useNavigate();
@@ -59,9 +61,13 @@ function Course() {
       <button className="btn" onClick={regenerate}>Regenerate code</button>
       <button className="btn p" onClick={toggle}>{course.joining_open ? "Close joining" : "Open joining"}</button>
       <p className="mute">Joining is {course.joining_open ? "open" : "closed"}.</p>
+      <p><Link className="btn" to={`/courses/${id}/topics`}>Topics</Link>{" "}
+        <Link className="btn" to={`/courses/${id}/materials`}>Materials</Link></p>
     </div></main>;
 }
 
 export default function App() {
-  return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<Courses />} /><Route path="/courses/:id" element={<Course />} /><Route path="/courses/:id/*" element={<Course />} /></Routes>;
+  return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<Courses />} />
+    <Route path="/courses/:id" element={<Course />} /><Route path="/courses/:id/topics" element={<TopicsSetup />} />
+    <Route path="/courses/:id/materials" element={<CourseMaterials />} /></Routes>;
 }

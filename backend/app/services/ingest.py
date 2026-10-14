@@ -3,6 +3,7 @@ import json
 import re
 from pathlib import Path
 import numpy as np
+from ..config import settings
 from . import rag
 
 
@@ -61,12 +62,13 @@ def chunk(text: str, size: int = 900) -> list[str]:
     return out
 
 
-def ingest(path: Path, material_id: int, concepts: list) -> int:
+def ingest(path: Path, course_id: int, material_id: int, concepts: list) -> int:
     docs, metas = [], []
     for sec, text in EXT[path.suffix.lower()](str(path)):
         for ch in chunk(text):
             docs.append(ch)
-            metas.append({"material": path.name.split("_", 1)[-1], "material_id": material_id, "section": sec, "concept": ""})
+            metas.append({"material": path.name.split("_", 1)[-1], "course_id": course_id,
+                          "material_id": material_id, "section": sec, "topic_key": ""})
     if not docs:
         return 0
     emb = np.array(rag.ef()(docs), dtype=float)
@@ -75,6 +77,6 @@ def ingest(path: Path, material_id: int, concepts: list) -> int:
         sims = (emb / np.linalg.norm(emb, axis=1, keepdims=True)) @ (cv / np.linalg.norm(cv, axis=1, keepdims=True)).T
         for i, m in enumerate(metas):
             j = int(sims[i].argmax())
-            m["concept"] = concepts[j].key if sims[i, j] >= 0.25 else ""
-    rag.col().add([f"m{material_id}-{i}" for i in range(len(docs))], docs, emb.tolist(), metas)
+            m["topic_key"] = concepts[j].key if sims[i, j] >= settings.min_similarity else ""
+    rag.col().add([f"c{course_id}-m{material_id}-{i}" for i in range(len(docs))], docs, emb.tolist(), metas)
     return len(docs)

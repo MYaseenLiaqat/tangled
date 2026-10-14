@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     env: str = "dev"
     jwt_secret: str = "change-me"
     chroma_dir: str = "./data/chroma"
+    embedding_cache_dir: str = "./data/embedding-cache"
     upload_dir: str = "./data/uploads"
     llm_api_key: str = ""
     llm_base_url: str | None = None
