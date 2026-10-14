@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     llm_base_url: str | None = None
     llm_model: str = "gpt-4o-mini"
     llm_timeout: float = 30.0
-    llm_max_retries: int = 2
+    llm_max_retries: int = 1
     min_similarity: float = 0.30
     intent_backend: str = "llm"    # llm | logreg
     intent_model_path: str = "./data/intent.joblib"
@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     quiz_low: float = 0.60
     max_upload_mb: int = 25
     rate_limit_per_min: int = 30
+    max_chat_input_chars: int = 1000
+    max_llm_output_tokens: int = 500
+    consent_version: str = "2026-10-14"
     enrolled: int = 24
 
     def validate_runtime(self) -> None:

@@ -41,8 +41,10 @@ class Material(SQLModel, table=True):
 
 class Student(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    course_id: int | None = Field(default=None, foreign_key="course.id", index=True)
-    code: str = Field(index=True, unique=True)  # pseudonymous; no names or emails stored
+    course_id: int = Field(foreign_key="course.id", index=True)
+    code: str | None = Field(default=None, index=True, unique=True)
+    consent_version: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class Message(SQLModel, table=True):

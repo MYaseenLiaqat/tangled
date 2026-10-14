@@ -13,7 +13,8 @@ def _c() -> AsyncOpenAI:
 
 
 async def chat(messages: list[dict], json_mode: bool = False, temperature: float = 0.2) -> str:
-    kw = dict(model=settings.llm_model, messages=messages, temperature=temperature)
+    kw = dict(model=settings.llm_model, messages=messages, temperature=temperature,
+              max_tokens=settings.max_llm_output_tokens)
     if json_mode:
         kw["response_format"] = {"type": "json_object"}
     r = await _c().chat.completions.create(**kw)
