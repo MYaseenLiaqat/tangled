@@ -23,10 +23,6 @@ class Settings(BaseSettings):
     rate_limit_per_min: int = 30
     enrolled: int = 24
 
-    @property
-    def teacher_token(self) -> str:
-        return self.jwt_secret
-
     def validate_runtime(self) -> None:
         if self.env not in ("dev", "prod"):
             raise ValueError("ENV must be dev or prod")

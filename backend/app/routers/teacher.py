@@ -9,12 +9,12 @@ from sqlmodel import Session, select
 from ..config import settings
 from ..adapters.files import LocalFileStorage
 from ..db import session
-from ..deps import teacher_auth
+from ..deps import current_instructor
 from ..models import Concept, Material, QuizItem, QuizResponse, Student, Verdict
 from ..services import insights
 from ..services.ingest import EXT, KIND, ingest
 
-router = APIRouter(dependencies=[Depends(teacher_auth)])
+router = APIRouter(dependencies=[Depends(current_instructor)])
 
 
 class VerdictIn(BaseModel):

@@ -2,8 +2,26 @@ from datetime import datetime, timezone
 from sqlmodel import SQLModel, Field
 
 
+class Instructor(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    email: str = Field(index=True, unique=True)
+    password_hash: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class Course(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    instructor_id: int = Field(foreign_key="instructor.id", index=True)
+    name: str
+    class_size: int | None = None
+    join_code: str = Field(index=True, unique=True)
+    joining_open: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
 class Concept(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    course_id: int | None = Field(default=None, foreign_key="course.id", index=True)
     key: str = Field(index=True, unique=True)
     name: str
     module: str = ""
@@ -12,6 +30,7 @@ class Concept(SQLModel, table=True):
 
 class Material(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    course_id: int | None = Field(default=None, foreign_key="course.id", index=True)
     filename: str
     kind: str
     size_kb: int = 0
@@ -21,11 +40,13 @@ class Material(SQLModel, table=True):
 
 class Student(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    course_id: int | None = Field(default=None, foreign_key="course.id", index=True)
     code: str = Field(index=True, unique=True)  # pseudonymous; no names or emails stored
 
 
 class Message(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    course_id: int | None = Field(default=None, foreign_key="course.id", index=True)
     student_id: int = Field(foreign_key="student.id", index=True)
     session_id: str = ""
     text: str
@@ -42,12 +63,14 @@ class Message(SQLModel, table=True):
 
 class QuizItem(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    course_id: int | None = Field(default=None, foreign_key="course.id", index=True)
     key: str = Field(index=True, unique=True)
     concept_id: int = Field(foreign_key="concept.id")
 
 
 class QuizResponse(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    course_id: int | None = Field(default=None, foreign_key="course.id", index=True)
     item_id: int = Field(foreign_key="quizitem.id", index=True)
     student_id: int = Field(foreign_key="student.id")
     option: str
@@ -56,6 +79,7 @@ class QuizResponse(SQLModel, table=True):
 
 class Verdict(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    course_id: int | None = Field(default=None, foreign_key="course.id", index=True)
     concept_id: int = Field(foreign_key="concept.id", index=True)
     verdict: str  # addressed | false_alarm
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
