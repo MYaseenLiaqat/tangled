@@ -16,6 +16,17 @@ export const api = {
   createCourse: (name: string, class_size?: number) => req("/courses", { method: "POST", body: JSON.stringify({ name, class_size }) }),
   updateCourse: (id: string, values: Record<string, unknown>) => req(`/courses/${id}`, { method: "PATCH", body: JSON.stringify(values) }),
   regenerateCode: (id: string) => req(`/courses/${id}/join-code/regenerate`, { method: "POST" }),
+  topicsForCourse: (id: string) => req(`/courses/${id}/topics`),
+  createTopic: (id: string, values: Record<string, string>) => req(`/courses/${id}/topics`, { method: "POST", body: JSON.stringify(values) }),
+  updateTopic: (courseId: string, topicId: number, values: Record<string, string>) => req(`/courses/${courseId}/topics/${topicId}`, { method: "PATCH", body: JSON.stringify(values) }),
+  deleteTopic: (courseId: string, topicId: number) => req(`/courses/${courseId}/topics/${topicId}`, { method: "DELETE" }),
+  materialsForCourse: (id: string) => req(`/courses/${id}/materials`),
+  uploadMaterials: (id: string, files: FileList) => {
+    const form = new FormData();
+    Array.from(files).forEach(file => form.append("files", file));
+    return req(`/courses/${id}/materials`, { method: "POST", body: form });
+  },
+  deleteMaterial: (courseId: string, materialId: number) => req(`/courses/${courseId}/materials/${materialId}`, { method: "DELETE" }),
   topics: (): Promise<any> => Promise.reject(new Error("Topics are disabled until Phase 3")),
   topic: (_id: string): Promise<any> => Promise.reject(new Error("Topics are disabled until Phase 3")),
   verdict: (_id: number, _verdict: string): Promise<any> => Promise.reject(new Error("Topics are disabled until Phase 3")),

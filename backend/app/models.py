@@ -36,6 +36,7 @@ class Material(SQLModel, table=True):
     size_kb: int = 0
     chunks: int = 0
     status: str = "indexed"
+    error: str = ""
 
 
 class Student(SQLModel, table=True):

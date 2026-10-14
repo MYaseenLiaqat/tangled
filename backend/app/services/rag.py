@@ -15,6 +15,10 @@ def ef():
     global _ef
     if _ef is None:
         from chromadb.utils.embedding_functions import DefaultEmbeddingFunction  # ONNX MiniLM, no torch
+        from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
+        from pathlib import Path
+        Path(settings.embedding_cache_dir).mkdir(parents=True, exist_ok=True)
+        ONNXMiniLM_L6_V2.DOWNLOAD_PATH = Path(settings.embedding_cache_dir) / "all-MiniLM-L6-v2"
         _ef = DefaultEmbeddingFunction()
     return _ef
 
@@ -26,8 +30,8 @@ def col():
     return _col
 
 
-def retrieve(q: str, k: int = 4) -> list[dict]:
-    return col().query(q, k)
+def retrieve(course_id: int, q: str, k: int = 4) -> list[dict]:
+    return col().query(course_id, q, k)
 
 
 def topic_of(hits: list[dict]) -> str | None:
@@ -36,8 +40,8 @@ def topic_of(hits: list[dict]) -> str | None:
         return None
     w: dict[str, float] = defaultdict(float)
     for h in hits:
-        if h["meta"].get("concept"):
-            w[h["meta"]["concept"]] += h["sim"]
+        if h["meta"].get("topic_key"):
+            w[h["meta"]["topic_key"]] += h["sim"]
     return max(w, key=w.get) if w else None
 
 
