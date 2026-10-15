@@ -1,26 +1,27 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { api } from "../api";
+import { Link, useParams } from "react-router-dom";
+import { api, friendlyError, TopicSummary } from "../api";
 
 export default function Topics() {
-  const [d, setD] = useState<any>(null);
-  useEffect(() => { api.topics().then(setD); }, []);
-  if (!d) return <p className="mute">Loading…</p>;
-  const s = d.summary;
-  return (<>
-    <h1>Topics</h1>
-    <div className="kpi"><div><b>{s.questions}</b>questions asked</div><div><b>{s.students_asking} of {s.enrolled}</b>students asked a question</div><div><b>{s.needs_attention}</b>topics need attention</div></div>
-    <h2>Topics needing attention</h2><p className="mute">Shown only when several students show confusion and a second signal agrees.</p>
-    {d.flagged.length === 0 && <div className="panel">No topics need attention right now.</div>}
-    <div className="grid2">{d.flagged.map((t: any) => (
-      <div className="card" key={t.id}>
-        <div className="ch"><div><h3>{t.name}</h3><div className="mute">{t.module}</div></div>
-          <span className={"tag " + (t.status === "addressed" ? "ok" : "rev")}>{t.status === "addressed" ? "Addressed" : "Needs attention"}</span></div>
-        <div className="pad"><div className="mute"><b className="big">{Math.round(t.share * 100)}%</b> of students show confusion</div>
-          <div className="bar lg"><i style={{ width: t.share * 100 + "%" }} /></div>
-          <span className={"tag " + (t.confidence === "High" ? "ok" : "mon")}>{t.confidence} confidence</span>
-          <div style={{ marginTop: 20 }}><Link className="btn p" to={`/teacher/topics/${t.id}`}>View details</Link></div></div>
-      </div>))}</div>
-    {d.not_flagged.map((n: any) => <p className="note" key={n.name}>Not flagged: {n.name}. {n.reason}</p>)}
-  </>);
+  const { id = "" } = useParams();
+  const [data, setData] = useState<TopicSummary | null>(null);
+  const [error, setError] = useState("");
+  const load = () => api.insights(id).then(setData).catch(error => setError(friendlyError(error)));
+  useEffect(() => { load(); }, [id]);
+  if (error) return <PageState message={error} retry={load} />;
+  if (!data) return <PageState message="Loading topics…" />;
+  return <><h1>Topics</h1><p className="note">Only topics with several students showing confusion appear here.</p>
+    <section className="summary"><div><b>{data.summary.questions}</b>questions asked</div><div><b>{data.summary.students_asking} of {data.summary.enrolled}</b>students asked</div><div><b>{data.summary.needs_attention}</b>topics need attention</div></section>
+    <h2 className="section-title">Topics needing attention</h2>
+    {data.flagged.length === 0 ? <div className="empty panel">No topics need attention yet.<small>As students ask questions, topics will appear here when the evidence is strong enough.</small></div> :
+      <div className="card-grid">{data.flagged.map(topic => <article className="topic-card" key={topic.id}>
+        <div className="card-head"><div><h3>{topic.name}</h3><small>{topic.module}</small></div><span className={`tag ${topic.status === "addressed" ? "ok" : "review"}`}>{topic.status === "addressed" ? "Addressed" : "Needs attention"}</span></div>
+        <div className="percentage"><strong>{Math.round(topic.share * 100)}%</strong><span>of students show confusion</span></div><div className="bar" aria-label={`${Math.round(topic.share * 100)} percent of students`}><i style={{ width: `${Math.min(topic.share * 100, 100)}%` }} /></div>
+        <div className="card-foot"><span className={`tag ${topic.confidence === "High" ? "ok" : "monitor"}`}>{topic.confidence} confidence</span><Link className="btn primary" to={`/courses/${id}/topics/${topic.id}`}>View details</Link></div>
+      </article>)}</div>}
+  </>;
+}
+
+function PageState({ message, retry }: { message: string; retry?: () => void }) {
+  return <div className="state" role={retry ? "alert" : undefined}><p>{message}</p>{retry && <button className="btn" onClick={retry}>Try again</button>}</div>;
 }
