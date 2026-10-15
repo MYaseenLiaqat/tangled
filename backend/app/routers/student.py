@@ -10,7 +10,7 @@ from ..adapters.jobs import FastAPIJobs
 from ..config import settings
 from ..db import session
 from ..deps import current_student
-from ..models import Concept, Course, Material, Message, Student
+from ..models import AnalysisJob, Concept, Course, Material, Message, Student
 from ..services import rag
 from ..services import analysis
 from ..services.tokens import signed_material_url, student_token, valid_material_signature
@@ -125,7 +125,10 @@ async def chat(body: ChatIn, background: BackgroundTasks,
     s.add(message)
     s.commit()
     s.refresh(message)
-    FastAPIJobs(background).enqueue(analysis.noop, message.id)
+    if not s.exec(select(AnalysisJob).where(AnalysisJob.message_id == message.id)).first():
+        s.add(AnalysisJob(message_id=message.id, course_id=st.course_id))
+        s.commit()
+    FastAPIJobs(background).enqueue(analysis.analyze, message.id)
     return {"message_id": message.id, "answer": answer, "sources": sources}
 
 
