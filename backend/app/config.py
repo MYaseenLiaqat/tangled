@@ -1,3 +1,4 @@
+import logging
 from typing import Literal
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -33,12 +34,36 @@ class Settings(BaseSettings):
     max_llm_output_tokens: int = 500
     consent_version: str = "2026-10-14"
     enrolled: int = 24
+    cors_origins: str = "http://localhost:5173"
+    request_max_bytes: int = 2_000_000
+    trusted_proxy: str = ""
+    join_rate_limit_per_min: int = 100
+    chat_ip_rate_limit_per_min: int = 120
+    chat_student_rate_limit_per_min: int = 60
+    login_rate_limit_per_min: int = 10
 
     def validate_runtime(self) -> None:
         if self.env not in ("dev", "prod"):
             raise ValueError("ENV must be dev or prod")
-        if self.env == "prod" and self.jwt_secret == "change-me":
-            raise ValueError("JWT_SECRET must be set in prod")
+        errors = []
+        if self.jwt_secret == "change-me" or len(self.jwt_secret) < 32:
+            errors.append("JWT_SECRET must be at least 32 characters and not use the default")
+        if not self.llm_api_key:
+            errors.append("LLM_API_KEY must be set")
+        if "*" in {origin.strip() for origin in self.cors_origins.split(",")}:
+            errors.append("CORS_ORIGINS must not contain a wildcard")
+        if errors and self.env == "prod":
+            raise ValueError("; ".join(errors))
+        for error in errors:
+            logging.getLogger("tangled.config").warning("development safety check: %s", error)
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+
+    @property
+    def trusted_proxy_list(self) -> list[str]:
+        return [proxy.strip() for proxy in self.trusted_proxy.split(",") if proxy.strip()]
 
 
 settings = Settings()
