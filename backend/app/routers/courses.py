@@ -1,5 +1,7 @@
 import re
 import secrets
+import csv
+import io
 from pathlib import Path
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
 from pydantic import BaseModel, Field
@@ -9,7 +11,8 @@ from ..adapters.jobs import FastAPIJobs
 from ..config import settings
 from ..db import session
 from ..deps import current_instructor, get_owned_course
-from ..models import Concept, Course, Instructor, Material
+from ..models import Concept, Course, Instructor, Material, QuizAggregate, Verdict
+from ..services import insights
 from ..services.ingest import EXT, KIND
 from ..services.materials import process_material, retag_course
 
@@ -110,9 +113,101 @@ def regenerate(course: Course = Depends(get_owned_course), s: Session = Depends(
 
 @router.get("/{course_id}/topics")
 def list_topics(course: Course = Depends(get_owned_course), s: Session = Depends(session)):
-    topics = s.exec(select(Concept).where(Concept.course_id == course.id)).all()
-    return [{"id": t.id, "name": t.name, "module_label": t.module, "description": t.description, "key": t.key}
-            for t in topics]
+    return insights.topics(s, course.id or 0)
+
+
+@router.get("/{course_id}/insights")
+def course_insights(course: Course = Depends(get_owned_course), s: Session = Depends(session)):
+    return insights.topics(s, course.id or 0)
+
+
+@router.get("/{course_id}/topics/{topic_id}/insights")
+async def topic_insights(topic_id: int, course: Course = Depends(get_owned_course), s: Session = Depends(session)):
+    result = await insights.detail(s, course.id or 0, topic_id)
+    if not result:
+        raise HTTPException(404, "Topic not found")
+    return result
+
+
+class VerdictIn(BaseModel):
+    verdict: str
+
+
+@router.post("/{course_id}/topics/{topic_id}/verdict")
+def topic_verdict(topic_id: int, body: VerdictIn, course: Course = Depends(get_owned_course),
+                  s: Session = Depends(session)):
+    if body.verdict not in {"addressed", "false_alarm"}:
+        raise HTTPException(400, "Invalid verdict")
+    topic = s.exec(select(Concept).where(Concept.id == topic_id,
+                                         Concept.course_id == course.id)).first()
+    if not topic:
+        raise HTTPException(404, "Topic not found")
+    s.add(Verdict(course_id=course.id, concept_id=topic_id, verdict=body.verdict))
+    s.commit()
+    return {"ok": True}
+
+
+@router.get("/{course_id}/quiz")
+def quiz(course: Course = Depends(get_owned_course), s: Session = Depends(session)):
+    rows = s.exec(select(QuizAggregate).where(QuizAggregate.course_id == course.id)).all()
+    out = {}
+    for row in rows:
+        item = out.setdefault(row.item, {"item": row.item, "concept": row.concept_name,
+                                         "total": 0, "correct": 0, "options": {}, "wrong_options": {}})
+        item["total"] += row.count
+        item["correct"] += row.count if row.correct else 0
+        item["options"][row.option] = row.count
+        if not row.correct:
+            item["wrong_options"][row.option] = item["wrong_options"].get(row.option, 0) + row.count
+    return [{"item": item["item"], "topic": item["concept"],
+             "correct_rate": round(item["correct"] / item["total"], 3) if item["total"] else 0,
+             "responses": item["total"], "options": item["options"],
+             "top_wrong": max(item["wrong_options"], key=item["wrong_options"].get)
+             if item["wrong_options"] else None} for item in out.values()]
+
+
+@router.post("/{course_id}/quiz/import")
+def import_quiz(file: UploadFile, course: Course = Depends(get_owned_course),
+                s: Session = Depends(session)):
+    raw = file.file.read()
+    if len(raw) > settings.max_quiz_import_mb * 1024 * 1024:
+        raise HTTPException(413, "Quiz file exceeds the size limit")
+    try:
+        reader = csv.DictReader(io.StringIO(raw.decode("utf-8-sig")))
+    except UnicodeDecodeError:
+        raise HTTPException(400, "Quiz CSV must be UTF-8")
+    required = {"item", "concept", "option", "count", "correct"}
+    headers = set(reader.fieldnames or [])
+    if headers.intersection({"name", "email", "id", "roll"}):
+        raise HTTPException(400, "Quiz CSV must not contain student identifiers")
+    if headers != required:
+        raise HTTPException(400, "Quiz CSV headers must be item, concept, option, count, correct")
+    concepts = {topic.name.casefold(): topic for topic in
+                s.exec(select(Concept).where(Concept.course_id == course.id)).all()}
+    rows, errors, unmatched = [], [], []
+    for number, row in enumerate(reader, start=2):
+        try:
+            item, concept_name, option = row["item"].strip(), row["concept"].strip(), row["option"].strip()
+            count = int(row["count"])
+            correct_text = row["correct"].strip().casefold()
+            if not item or not concept_name or not option or count < 0 or correct_text not in {"true", "false", "1", "0", "yes", "no"}:
+                raise ValueError("invalid item, concept, option, count, or correct value")
+            concept = concepts.get(concept_name.casefold())
+            if not concept:
+                unmatched.append({"row": number, "concept": concept_name})
+            rows.append((item, concept_name, option, count, correct_text in {"true", "1", "yes"}, concept))
+        except (KeyError, ValueError) as exc:
+            errors.append({"row": number, "error": str(exc)})
+    if errors:
+        raise HTTPException(422, {"errors": errors, "unmatched_concepts": unmatched})
+    for old in s.exec(select(QuizAggregate).where(QuizAggregate.course_id == course.id)).all():
+        s.delete(old)
+    for item, concept_name, option, count, correct, concept in rows:
+        s.add(QuizAggregate(course_id=course.id, item=item, concept_name=concept_name,
+                            concept_id=concept.id if concept else None, option=option,
+                            count=count, correct=correct))
+    s.commit()
+    return {"imported": len(rows), "unmatched_concepts": unmatched}
 
 
 @router.post("/{course_id}/topics")

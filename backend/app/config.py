@@ -1,3 +1,4 @@
+from typing import Literal
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,6 +17,11 @@ class Settings(BaseSettings):
     llm_max_retries: int = 1
     min_similarity: float = 0.25
     rag_top_k: int = 4
+    llm_json_mode: Literal["auto", "on", "off"] = "auto"
+    llm_max_concurrency: int = 4
+    analysis_max_retries: int = 3
+    max_evidence_phrase_chars: int = 120
+    max_quiz_import_mb: int = 5
     intent_backend: str = "llm"    # llm | logreg
     intent_model_path: str = "./data/intent.joblib"
     min_conf: float = 0.70

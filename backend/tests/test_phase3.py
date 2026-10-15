@@ -24,7 +24,8 @@ def test_topic_limit_and_course_isolation():
         assert client.post(f"/api/v1/courses/{first['id']}/topics",
                            json={"name": "Too many", "module_label": "Module",
                                  "description": "A useful topic."}, headers=headers).status_code == 400
-        assert client.get(f"/api/v1/courses/{second['id']}/topics", headers=headers).json() == []
+        topics = client.get(f"/api/v1/courses/{second['id']}/topics", headers=headers).json()
+        assert topics["flagged"] == [] and topics["not_flagged"] == []
 
 
 def test_material_validation_and_pdf_scan_message(monkeypatch):

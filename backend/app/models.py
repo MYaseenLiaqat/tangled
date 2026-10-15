@@ -64,6 +64,42 @@ class Message(SQLModel, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), index=True)
 
 
+class AnalysisJob(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    message_id: int = Field(foreign_key="message.id", unique=True, index=True)
+    course_id: int = Field(foreign_key="course.id", index=True)
+    status: str = "pending"
+    attempts: int = 0
+    last_error: str = ""
+    intent: str = ""
+    confidence: float = 0.0
+    misconception: bool = False
+    topic_id: int | None = Field(default=None, foreign_key="concept.id")
+    gap: bool = False
+    evidence_phrase: str = ""
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class QuizAggregate(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    course_id: int = Field(foreign_key="course.id", index=True)
+    item: str = Field(index=True)
+    concept_id: int | None = Field(default=None, foreign_key="concept.id", index=True)
+    concept_name: str = ""
+    option: str
+    count: int
+    correct: bool
+
+
+class InsightGroup(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    course_id: int = Field(foreign_key="course.id", index=True)
+    concept_id: int = Field(foreign_key="concept.id", index=True)
+    fingerprint: str = Field(index=True)
+    title: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
 class QuizItem(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     course_id: int | None = Field(default=None, foreign_key="course.id", index=True)
@@ -82,7 +118,7 @@ class QuizResponse(SQLModel, table=True):
 
 class Verdict(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    course_id: int | None = Field(default=None, foreign_key="course.id", index=True)
+    course_id: int = Field(foreign_key="course.id", index=True)
     concept_id: int = Field(foreign_key="concept.id", index=True)
     verdict: str  # addressed | false_alarm
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
