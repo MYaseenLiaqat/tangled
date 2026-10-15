@@ -1,18 +1,12 @@
-import { useEffect, useState } from "react";
-import { api } from "../api";
+import { ChangeEvent, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { api, friendlyError, QuizRow } from "../api";
 
 export default function Quiz() {
-  const [rows, setRows] = useState<any[]>([]);
-  const load = () => api.quiz().then(setRows);
-  useEffect(() => { load(); }, []);
-  return (<>
-    <h1>Quiz results</h1><p className="mute">Each row is one quiz question. The bar shows how many students answered it correctly.</p>
-    <label className="btn p">Import results (CSV)<input hidden type="file" accept=".csv" onChange={async e => { if (e.target.files?.[0]) { await api.importQuiz(e.target.files[0]); load(); } }} /></label>
-    {rows[0] && <div className="cap"><b>Hardest question:</b> {rows[0].topic}, answered correctly by {Math.round(rows[0].correct_rate * 100)}% of students.</div>}
-    <div className="panel"><table><thead><tr><th>Topic</th><th style={{ width: "34%" }}>Answered correctly</th><th>Most common wrong answer</th></tr></thead>
-      <tbody>{rows.map(r => <tr key={r.item}><td><b>{r.topic}</b><br /><small className="mute">{r.item}</small></td>
-        <td><div className="cnt"><b>{Math.round(r.correct_rate * 100)}%</b><span className="bar"><i style={{ width: r.correct_rate * 100 + "%", background: r.correct_rate < 0.6 ? "var(--rev)" : undefined }} /></span></div></td>
-        <td>{r.top_wrong ? <>Option {r.top_wrong.option}<br /><small className="mute">chosen by {r.top_wrong.count} students</small></> : "—"}</td></tr>)}</tbody></table></div>
-    <p className="note">A red bar means fewer than 60% of students answered correctly. CSV columns: item, concept, student_code, answer, correct.</p>
-  </>);
+  const { id = "" } = useParams(); const [rows, setRows] = useState<QuizRow[]>([]); const [error, setError] = useState(""); const [message, setMessage] = useState(""); const [busy, setBusy] = useState(false);
+  const load = () => api.quiz(id).then(setRows).catch(error => setError(friendlyError(error)));
+  useEffect(() => { load(); }, [id]);
+  async function importFile(event: ChangeEvent<HTMLInputElement>) { const file = event.target.files?.[0]; if (!file) return; setBusy(true); setError(""); setMessage(""); try { const result = await api.importQuiz(id, file); setMessage(`Imported ${result.imported} aggregate rows.${result.unmatched_concepts.length ? ` Unmatched concepts: ${result.unmatched_concepts.map(item => item.concept).join(", ")}.` : ""}`); load(); } catch (error) { setError(friendlyError(error, "The CSV could not be imported. Check the headers and row numbers.")); } finally { setBusy(false); } }
+  if (error && !rows.length) return <div className="state" role="alert"><p>{error}</p><button className="btn" onClick={load}>Try again</button></div>;
+  return <><h1>Quiz results</h1><p className="note">Aggregate results only. No student identities are imported or displayed.</p><label className="btn primary">{busy ? "Importing…" : "Import aggregate CSV"}<input hidden type="file" accept=".csv" onChange={importFile} /></label><p aria-live="polite" className={error ? "error" : "success"}>{error || message}</p>{rows.length === 0 ? <div className="empty panel">No quiz results yet.<small>Import an aggregate CSV with item, concept, option, count, correct.</small></div> : <div className="panel"><table><thead><tr><th>Topic</th><th>Answered correctly</th><th>Most common wrong option</th></tr></thead><tbody>{rows.map(row => <tr key={row.item}><td><b>{row.topic}</b><small>{row.item}</small></td><td><div className="bar-label"><b>{Math.round(row.correct_rate * 100)}%</b><span className="bar"><i style={{ width: `${row.correct_rate * 100}%` }} /></span></div></td><td>{row.top_wrong || "—"}</td></tr>)}</tbody></table></div>}</>;
 }

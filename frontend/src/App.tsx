@@ -1,101 +1,37 @@
-import { FormEvent, useEffect, useState } from "react";
-import { Link, Outlet, Route, Routes, useNavigate, useParams } from "react-router-dom";
-import { api } from "./api";
-import TopicsSetup from "./pages/TopicsSetup";
-import CourseMaterials from "./pages/CourseMaterials";
+import { FormEvent, lazy, Suspense, useEffect, useState } from "react";
+import { Link, NavLink, Outlet, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { api, Course, friendlyError } from "./api";
 import Join from "./pages/Join";
 import Student from "./pages/Student";
 
+const Topics = lazy(() => import("./pages/Topics"));
+const TopicDetail = lazy(() => import("./pages/TopicDetail"));
+const Quiz = lazy(() => import("./pages/Quiz"));
+const Materials = lazy(() => import("./pages/CourseMaterials"));
+const TopicsSetup = lazy(() => import("./pages/TopicsSetup"));
+
 function Auth() {
-  const navigate = useNavigate();
-  const [registering, setRegistering] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  async function submit(event: FormEvent) {
-    event.preventDefault();
-    try {
-      const result = await (registering ? api.register(email, password) : api.login(email, password));
-      localStorage.setItem("instructor_token", result.access_token);
-      navigate("/courses");
-    } catch (err) { setError(String(err)); }
-  }
-  return <main className="landing"><h1>Tangled</h1><form className="panel" onSubmit={submit}>
-    <h2>{registering ? "Create instructor account" : "Instructor login"}</h2>
-    <input required type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-    <input required minLength={8} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-    <button className="btn p" type="submit">{registering ? "Register" : "Log in"}</button>
-    {error && <p className="bad">{error}</p>}
-    <button type="button" className="btn" onClick={() => setRegistering(!registering)}>{registering ? "Already registered?" : "Create an account"}</button>
-  </form></main>;
+  const navigate = useNavigate(); const [registering, setRegistering] = useState(false); const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
+  async function submit(event: FormEvent) { event.preventDefault(); setBusy(true); setError(""); try { const result = await (registering ? api.register(email, password) : api.login(email, password)); localStorage.setItem("instructor_token", result.access_token); navigate("/courses"); } catch (error) { setError(friendlyError(error, "We could not sign you in. Check your details and try again.")); } finally { setBusy(false); } }
+  return <main className="landing"><h1>Tangled</h1><form className="panel form" onSubmit={submit}><h2>{registering ? "Create instructor account" : "Instructor login"}</h2><input required type="email" placeholder="Email" value={email} onChange={event => setEmail(event.target.value)} /><input required minLength={8} type="password" placeholder="Password" value={password} onChange={event => setPassword(event.target.value)} /><button className="btn primary" disabled={busy}>{busy ? "Working…" : registering ? "Register" : "Log in"}</button>{error && <p className="error" role="alert">{error}</p>}<button type="button" className="btn" onClick={() => setRegistering(!registering)}>{registering ? "Already registered?" : "Create an account"}</button></form></main>;
 }
 
 function Courses() {
-  const [courses, setCourses] = useState<any[]>([]);
-  const [name, setName] = useState("");
-  const [classSize, setClassSize] = useState("");
-  const load = () => api.courses().then(setCourses);
+  const [courses, setCourses] = useState<Course[]>([]); const [name, setName] = useState(""); const [classSize, setClassSize] = useState(""); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
+  const load = () => api.courses().then(setCourses).catch(error => setError(friendlyError(error)));
   useEffect(() => { load(); }, []);
-  async function create(event: FormEvent) {
-    event.preventDefault();
-    await api.createCourse(name, classSize ? Number(classSize) : undefined);
-    setName(""); setClassSize(""); load();
-  }
-  return <main className="landing"><h1>Your courses</h1><form className="panel" onSubmit={create}>
-    <input required placeholder="Course name" value={name} onChange={e => setName(e.target.value)} />
-    <input type="number" min="1" placeholder="Class size (optional)" value={classSize} onChange={e => setClassSize(e.target.value)} />
-    <button className="btn p">Create course</button>
-  </form><div className="grid2">{courses.map(course => <Link className="card" key={course.id} to={`/courses/${course.id}`}><h2>{course.name}</h2><p className="mute">Join code: {course.join_code}</p></Link>)}</div></main>;
+  async function create(event: FormEvent) { event.preventDefault(); setBusy(true); try { await api.createCourse(name, classSize ? Number(classSize) : undefined); setName(""); setClassSize(""); load(); } catch (error) { setError(friendlyError(error)); } finally { setBusy(false); } }
+  return <main className="landing"><h1>Your courses</h1><form className="panel form" onSubmit={create}><input required placeholder="Course name" value={name} onChange={event => setName(event.target.value)} /><input type="number" min="1" placeholder="Class size (optional)" value={classSize} onChange={event => setClassSize(event.target.value)} /><button className="btn primary" disabled={busy}>{busy ? "Creating…" : "Create course"}</button>{error && <p className="error" role="alert">{error}</p>}</form><div className="card-grid">{courses.map(course => <Link className="topic-card" key={course.id} to={`/courses/${course.id}/topics`}><h2>{course.name}</h2><p className="note">Join code: {course.join_code}</p></Link>)}</div></main>;
 }
 
-function Course() {
-  const { id = "" } = useParams();
-  const [course, setCourse] = useState<any>();
-  const [copied, setCopied] = useState<"link" | "code" | "">("");
-  const [copyFallback, setCopyFallback] = useState(false);
-  const [copyMessage, setCopyMessage] = useState("");
-  useEffect(() => { api.course(id).then(setCourse); }, [id]);
-  if (!course) return <main className="landing"><p>Loading...</p></main>;
-  async function toggle() { setCourse(await api.updateCourse(id, { joining_open: !course.joining_open })); }
-  async function regenerate() { setCourse(await api.regenerateCode(id)); }
-  async function copy(value: string, kind: "link" | "code", elementId: string) {
-    setCopyFallback(false);
-    try {
-      if (!navigator.clipboard) throw new Error("Clipboard unavailable");
-      await navigator.clipboard.writeText(value);
-      setCopyMessage("Copied");
-    } catch {
-      const element = document.getElementById(elementId);
-      if (element) {
-        const selection = window.getSelection();
-        const range = document.createRange();
-        range.selectNodeContents(element);
-        selection?.removeAllRanges();
-        selection?.addRange(range);
-      }
-      setCopyMessage("Press Ctrl+C to copy");
-      setCopyFallback(true);
-    }
-    setCopied(kind);
-    window.setTimeout(() => { setCopied(""); setCopyFallback(false); setCopyMessage(""); }, 2000);
-  }
-  const link = `${window.location.origin}${course.join_link}`;
-  return <main className="landing"><p><Link to="/courses">All courses</Link></p><h1>{course.name}</h1>
-    <div className="panel"><h2>Student join</h2><p id="join-code">Code: <b>{course.join_code}</b></p><p id="join-link">{link}</p>
-      <button className="btn" onClick={() => copy(link, "link", "join-link")}>{copied === "link" ? (copyFallback ? "Press Ctrl+C to copy" : "Copied") : "Copy link"}</button>
-      <button className="btn" onClick={() => copy(course.join_code, "code", "join-code")}>{copied === "code" ? (copyFallback ? "Press Ctrl+C to copy" : "Copied") : "Copy code"}</button>
-      <p className="mute" aria-live="polite">{copyMessage}</p>
-      <button className="btn" onClick={regenerate}>Regenerate code</button>
-      <button className="btn p" onClick={toggle}>{course.joining_open ? "Close joining" : "Open joining"}</button>
-      <p className="mute">Joining is {course.joining_open ? "open" : "closed"}.</p>
-      <p><Link className="btn" to={`/courses/${id}/topics`}>Topics</Link>{" "}
-        <Link className="btn" to={`/courses/${id}/materials`}>Materials</Link></p>
-    </div></main>;
+function Layout() {
+  const { id = "" } = useParams(); const [course, setCourse] = useState<Course | null>(null); const [error, setError] = useState("");
+  useEffect(() => { api.course(id).then(setCourse).catch(error => setError(friendlyError(error))); }, [id]);
+  if (error) return <main className="state" role="alert"><p>{error}</p><Link className="btn" to="/courses">Back to courses</Link></main>;
+  if (!course) return <main className="state"><p>Loading course…</p></main>;
+  return <div className="shell"><aside className="side"><Link className="logo" to="/courses">Tangled</Link><NavLink to={`/courses/${id}/topics`}>Topics</NavLink><NavLink to={`/courses/${id}/quiz`}>Quiz results</NavLink><NavLink to={`/courses/${id}/materials`}>Materials</NavLink><NavLink to={`/courses/${id}/setup`}>Topic setup</NavLink><Link to="/courses">All courses</Link></aside><div className="wrap"><header className="top"><h1>{course.name}</h1><span className="note">Instructor view</span></header><main><Suspense fallback={<div className="state"><p>Loading page…</p></div>}><Outlet /></Suspense></main></div></div>;
 }
 
 export default function App() {
-  return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<Courses />} />
-    <Route path="/join/:code" element={<Join />} /><Route path="/student" element={<Student />} />
-    <Route path="/courses/:id" element={<Course />} /><Route path="/courses/:id/topics" element={<TopicsSetup />} />
-    <Route path="/courses/:id/materials" element={<CourseMaterials />} /></Routes>;
+  return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<Courses />} /><Route path="/join/:code" element={<Join />} /><Route path="/student" element={<Student />} /><Route path="/courses/:id" element={<Layout />}><Route index element={<Topics />} /><Route path="topics" element={<Topics />} /><Route path="topics/:topicId" element={<TopicDetail />} /><Route path="quiz" element={<Quiz />} /><Route path="materials" element={<Materials />} /><Route path="setup" element={<TopicsSetup />} /></Route></Routes>;
 }

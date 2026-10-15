@@ -116,6 +116,13 @@ def list_topics(course: Course = Depends(get_owned_course), s: Session = Depends
     return insights.topics(s, course.id or 0)
 
 
+@router.get("/{course_id}/topic-list")
+def topic_list(course: Course = Depends(get_owned_course), s: Session = Depends(session)):
+    topics = s.exec(select(Concept).where(Concept.course_id == course.id)).all()
+    return [{"id": topic.id, "name": topic.name, "description": topic.description,
+             "module_label": topic.module} for topic in topics]
+
+
 @router.get("/{course_id}/insights")
 def course_insights(course: Course = Depends(get_owned_course), s: Session = Depends(session)):
     return insights.topics(s, course.id or 0)
