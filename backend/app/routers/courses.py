@@ -15,6 +15,7 @@ from ..models import Concept, Course, Instructor, Material, QuizAggregate, Verdi
 from ..services import insights
 from ..services.ingest import EXT, KIND
 from ..services.materials import process_material, retag_course
+from ..services.course_deletion import delete_course
 
 router = APIRouter()
 ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
@@ -48,6 +49,10 @@ class TopicUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=120)
     module_label: str | None = Field(default=None, min_length=1, max_length=120)
     description: str | None = Field(default=None, min_length=1, max_length=300)
+
+
+class CourseDelete(BaseModel):
+    confirmation: str = Field(min_length=1)
 
 
 def validate_description(description: str) -> str:
@@ -100,6 +105,14 @@ def update_course(body: CourseUpdate, course: Course = Depends(get_owned_course)
     s.commit()
     s.refresh(course)
     return output(course)
+
+
+@router.delete("/{course_id}")
+def delete(body: CourseDelete, course: Course = Depends(get_owned_course)):
+    if body.confirmation != course.name:
+        raise HTTPException(400, "Type the course name exactly to confirm deletion")
+    delete_course(course.id or 0)
+    return {"ok": True}
 
 
 @router.post("/{course_id}/join-code/regenerate")

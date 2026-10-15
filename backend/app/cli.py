@@ -5,6 +5,7 @@ from .config import settings
 from .db import engine
 from .models import AnalysisJob
 from .services.analysis import analyze
+from .services import rag
 
 
 def retry_unlabelled() -> None:
@@ -16,12 +17,18 @@ def retry_unlabelled() -> None:
         asyncio.run(analyze(message_id))
 
 
+def prewarm() -> None:
+    rag.ef()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["retry_unlabelled"])
+    parser.add_argument("command", choices=["retry_unlabelled", "prewarm"])
     args = parser.parse_args()
     if args.command == "retry_unlabelled":
         retry_unlabelled()
+    elif args.command == "prewarm":
+        prewarm()
 
 
 if __name__ == "__main__":

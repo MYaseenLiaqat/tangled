@@ -1,13 +1,14 @@
 from datetime import datetime, timedelta, timezone
 import jwt
 from argon2 import PasswordHasher
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
 from sqlmodel import Session, select
 from ..config import settings
 from ..db import session
 from ..deps import current_instructor
 from ..models import Instructor
+from ..services.rate_limit import enforce
 
 router = APIRouter()
 passwords = PasswordHasher()
@@ -43,7 +44,8 @@ def register(body: Credentials, s: Session = Depends(session)):
 
 
 @router.post("/login")
-def login(body: Credentials, s: Session = Depends(session)):
+def login(body: Credentials, request: Request, s: Session = Depends(session)):
+    enforce(f"login:{request.client.host if request.client else 'unknown'}", settings.login_rate_limit_per_min)
     instructor = s.exec(select(Instructor).where(Instructor.email == body.email.lower())).first()
     if not instructor:
         raise HTTPException(401, "Invalid email or password")

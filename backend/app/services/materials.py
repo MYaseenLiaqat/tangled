@@ -1,5 +1,6 @@
 from pathlib import Path
 from sqlmodel import Session, select
+from sqlalchemy import delete
 from ..adapters.chroma import ChromaVectorStore
 from ..adapters.files import LocalFileStorage
 from ..db import engine

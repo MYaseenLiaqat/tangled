@@ -1,8 +1,9 @@
 import asyncio
+import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from openai import APIError, APITimeoutError
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from sqlmodel import Session, select
@@ -14,8 +15,10 @@ from ..models import AnalysisJob, Concept, Course, Material, Message, Student
 from ..services import rag
 from ..services import analysis
 from ..services.tokens import signed_material_url, student_token, valid_material_signature
+from ..services.rate_limit import client_ip, enforce
 
 router = APIRouter()
+logger = logging.getLogger("tangled.student")
 
 
 class JoinIn(BaseModel):
@@ -42,7 +45,8 @@ def join_info(code: str, s: Session = Depends(session)):
 
 
 @router.post("/join")
-def join(body: JoinIn, s: Session = Depends(session)):
+def join(body: JoinIn, request: Request, s: Session = Depends(session)):
+    enforce(f"join:{client_ip(request)}", settings.join_rate_limit_per_min)
     if not body.consent:
         raise HTTPException(400, "Consent is required")
     course = s.exec(select(Course).where(Course.join_code == body.code.upper())).first()
@@ -100,7 +104,10 @@ def enforce_rate_limit(student: Student, s: Session) -> None:
 
 @router.post("/chat")
 async def chat(body: ChatIn, background: BackgroundTasks,
-               st: Student = Depends(current_student), s: Session = Depends(session)):
+               request: Request, st: Student = Depends(current_student), s: Session = Depends(session)):
+    started = datetime.now(timezone.utc)
+    enforce(f"chat-ip:{client_ip(request)}", settings.chat_ip_rate_limit_per_min)
+    enforce(f"chat-student:{st.id}", settings.chat_student_rate_limit_per_min)
     enforce_rate_limit(st, s)
     hits = await asyncio.to_thread(rag.retrieve, st.course_id, body.text)
     similarity = hits[0]["sim"] if hits else 0.0
@@ -114,6 +121,8 @@ async def chat(body: ChatIn, background: BackgroundTasks,
         s.add(message)
         s.commit()
         s.refresh(message)
+        logger.info("chat_metrics student_id=%s latency_ms=%d retrieved=%d refusal=yes",
+                    st.id, int((datetime.now(timezone.utc) - started).total_seconds() * 1000), len(hits))
         return {"message_id": message.id, "answer": rag.REFUSAL, "sources": []}
     try:
         answer, sources = await rag.answer(body.text, hits)
@@ -129,6 +138,8 @@ async def chat(body: ChatIn, background: BackgroundTasks,
         s.add(AnalysisJob(message_id=message.id, course_id=st.course_id))
         s.commit()
     FastAPIJobs(background).enqueue(analysis.analyze, message.id)
+    logger.info("chat_metrics student_id=%s latency_ms=%d retrieved=%d refusal=no",
+                st.id, int((datetime.now(timezone.utc) - started).total_seconds() * 1000), len(hits))
     return {"message_id": message.id, "answer": answer, "sources": sources}
 
 
