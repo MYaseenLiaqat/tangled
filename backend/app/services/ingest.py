@@ -33,7 +33,21 @@ def _docx(p):
 
 def _nb(p):
     cells = json.loads(Path(p).read_text(encoding="utf-8"))["cells"]
-    return [(f"cell {i+1}", "".join(c.get("source", ""))) for i, c in enumerate(cells)]
+    if not isinstance(cells, list):
+        raise ValueError("Notebook cells must be a list")
+    out = []
+    for i, cell in enumerate(cells):
+        if not isinstance(cell, dict) or cell.get("cell_type") not in {"code", "markdown", "raw"}:
+            raise ValueError(f"Invalid notebook cell at index {i}")
+        source = cell.get("source", "")
+        if isinstance(source, str):
+            text = source
+        elif isinstance(source, list) and all(isinstance(line, str) for line in source):
+            text = "".join(source)
+        else:
+            raise ValueError(f"Invalid notebook source at index {i}")
+        out.append((f"cell {i+1}", text))
+    return out
 
 
 def _txt(p):

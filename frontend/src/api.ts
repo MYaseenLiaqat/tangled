@@ -7,8 +7,9 @@ export type Material = { id: number; filename: string; kind: string; size_kb: nu
 export type Topic = { id: number; name: string; module_label: string; description: string; key: string };
 export type TopicListItem = { id: number; name: string; module_label: string; description: string };
 export type QuizImport = { imported: number; unmatched_concepts: { row: number; concept: string }[] };
-type StudentMaterial = { id: number; filename: string; status: string; file_url?: string };
-type StudentMessage = { message_id: number; question?: string; answer?: string; feedback?: string };
+export type StudentSource = { n: number; material?: string; section?: string };
+export type StudentMaterial = { id: number; filename: string; status: string; file_url?: string };
+export type StudentMessage = { message_id: number; question?: string; answer?: string; feedback?: string; sources?: StudentSource[] };
 type JoinInfo = { name: string };
 
 const instructorToken = () => localStorage.getItem("instructor_token") || "";

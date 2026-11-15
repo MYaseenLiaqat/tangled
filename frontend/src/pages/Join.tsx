@@ -36,7 +36,7 @@ export default function Join() {
   return <main className="landing"><form className="panel" onSubmit={submit}>
     <h1>Join course</h1>{course && <p>Joining <b>{course.name}</b>.</p>}<p>This is anonymous. Your questions are shared with the instructor only in combined form.</p>
     <label>Course code<input value={joinCode} maxLength={6} onChange={e => setJoinCode(e.target.value.toUpperCase())} /></label>
-    <label><input ref={checkbox} type="checkbox" checked={consent} onChange={e => { setConsent(e.target.checked); if (e.target.checked) setError(""); }} /> I consent to the data use described in the <a href="/consent">consent notice</a>.</label>
+    <label><input ref={checkbox} type="checkbox" checked={consent} onChange={e => { setConsent(e.target.checked); if (e.target.checked) setError(""); }} /> I consent to the data use described in the <a href={`/consent/${code}`}>consent notice</a>.</label>
     {error && <p className="bad" role="alert">{error}</p>}
     <button className="btn p">Join</button>
   </form></main>;

@@ -1,0 +1,1206 @@
+{
+  "annotator_count": 1,
+  "cohen_kappa": null,
+  "records": [
+    {
+      "id": "CF01",
+      "text": "I still cannot tell which force belongs to which object in Newton's third law.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF02",
+      "text": "My probability answer exceeds one and I cannot find the mistake.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": true,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF03",
+      "text": "The DNA replication diagram is not making sense to me.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF04",
+      "text": "These graphs seem contradictory even though they describe the same data.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF05",
+      "text": "I tried balancing the equation repeatedly and the oxygen count keeps changing.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF06",
+      "text": "I am lost at the step where the proof reaches its conclusion.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF07",
+      "text": "I do not understand why the code enters the loop again.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF08",
+      "text": "I keep getting a negative variance and cannot trace the calculation.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": true,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF09",
+      "text": "Correlation and causation are still unclear to me after class.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF10",
+      "text": "I cannot follow how the evidence supports the historical claim.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF11",
+      "text": "I expected the cell to shrink, but the result says it swells; what did I miss?",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF12",
+      "text": "My integral has the right limits but disagrees with the solution.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF13",
+      "text": "I thought a heavier object falls faster in a vacuum, so this experiment confuses me.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": true,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF14",
+      "text": "I am unsure which variable should be held constant here.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF15",
+      "text": "The recursive call makes sense once, but not when it returns.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF16",
+      "text": "The normal-distribution probability I get is impossible.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": true,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF17",
+      "text": "I cannot reconcile the textbook definition with the example.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF18",
+      "text": "The map projection is confusing because distances seem inconsistent.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF19",
+      "text": "I lose the reason for introducing the auxiliary function in the proof.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF20",
+      "text": "I keep mixing up mitosis and meiosis in this question.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF21",
+      "text": "The circuit sign convention gives me the opposite current.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": true,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF22",
+      "text": "I do not see why this database join removes those rows.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF23",
+      "text": "The confidence interval seems contradictory to the statement about observations.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF24",
+      "text": "My titration endpoint appears before the indicator changes color.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF25",
+      "text": "The derivative test gives a maximum although the graph looks flat.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF26",
+      "text": "The events are called independent, but the wording seems related.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF27",
+      "text": "I am stuck converting the recurrence into a closed form.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF28",
+      "text": "I thought all mutations were harmful, so these examples confuse me.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": true,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF29",
+      "text": "The essay evidence does not support its thesis, but I cannot locate the gap.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF30",
+      "text": "I keep treating the denominator as zero and the limit becomes undefined.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": true,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF31",
+      "text": "I am not sure how the control group rules out the alternative.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF32",
+      "text": "The program passes simple tests but fails the nested case.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF33",
+      "text": "I cannot tell whether this reaction is oxidation or reduction.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF34",
+      "text": "The vector components add correctly, but the resultant direction is wrong.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF35",
+      "text": "I thought a sample mean was always the population mean.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": true,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF36",
+      "text": "I do not understand necessary versus sufficient conditions.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF37",
+      "text": "The histogram and statistics seem to tell different stories.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF38",
+      "text": "The equilibrium step in this economic model feels arbitrary.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF39",
+      "text": "I cannot see how the algorithm remains linear with the nested scan.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "CF40",
+      "text": "The phase diagram contradicts my prediction when temperature rises.",
+      "gold_intent": "confusion",
+      "expected_topic": null,
+      "confusion_expressed": true,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student reports difficulty, failed reasoning, uncertainty, or contradiction."
+    },
+    {
+      "id": "IN01",
+      "text": "What is the difference between mass and weight?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN02",
+      "text": "How do I set up conditional probability for two events?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN03",
+      "text": "Can you give a biological example of a gene regulator?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN04",
+      "text": "What steps normalize a dataset before clustering?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN05",
+      "text": "Could you summarize the causes of the French Revolution?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN06",
+      "text": "Why does a catalyst change reaction rate without being consumed?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN07",
+      "text": "What is the purpose of a recursion base case?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN08",
+      "text": "How is a confidence interval interpreted?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN09",
+      "text": "Can you show a valid deductive argument?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN10",
+      "text": "Which SQL clause filters groups after aggregation?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN11",
+      "text": "What is the difference between mitosis and meiosis?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN12",
+      "text": "How do I calculate potential from a point charge?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN13",
+      "text": "What are the stages of the scientific method?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN14",
+      "text": "What does an operating system kernel manage?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN15",
+      "text": "How do I identify an independent variable?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN16",
+      "text": "What is the role of a control group?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN17",
+      "text": "Can you explain natural selection?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN18",
+      "text": "Which graph compares category distributions?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN19",
+      "text": "What is a necessary condition in logic?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN20",
+      "text": "How do I convert a recurrence to matrix form?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN21",
+      "text": "Can you provide an example of a polar covalent bond?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN22",
+      "text": "Why is the median sometimes preferred to the mean?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN23",
+      "text": "What are the main layers in TCP/IP?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN24",
+      "text": "How should I cite a primary historical source?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN25",
+      "text": "What is the difference between oxidation and reduction?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN26",
+      "text": "Can you summarize the argument for utilitarianism?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN27",
+      "text": "What formula gives vector magnitude?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN28",
+      "text": "How does a hash table look up a key?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN29",
+      "text": "What is a confounding variable?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN30",
+      "text": "Which conditions are required for a binomial model?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN31",
+      "text": "How do map projections represent Earth?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN32",
+      "text": "What is the role of an auxiliary function in a proof?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN33",
+      "text": "How do I read a phase diagram?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN34",
+      "text": "What does equilibrium mean in economics?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN35",
+      "text": "Can you give an example of a harmless mutation?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN36",
+      "text": "What is the difference between correlation and causation?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN37",
+      "text": "How does a database inner join work?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN38",
+      "text": "Could you outline a titration?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN39",
+      "text": "What is the difference between consequentialist and deontological ethics?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "IN40",
+      "text": "How can I test algorithm time complexity?",
+      "gold_intent": "information",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Student requests knowledge or procedure without expressing difficulty."
+    },
+    {
+      "id": "OT01",
+      "text": "Hi, I wanted to say hello before class.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT02",
+      "text": "Thanks, that announcement helped.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT03",
+      "text": "Can I change my discussion section?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT04",
+      "text": "The assignment portal says my enrollment is inactive.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT05",
+      "text": "What room is the department reception in?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT06",
+      "text": "I will be away on Thursday.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT07",
+      "text": "Please resend the calendar invitation.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT08",
+      "text": "The campus printer took my payment but did not print.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT09",
+      "text": "Good afternoon.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT10",
+      "text": "I uploaded a file to the wrong course.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT11",
+      "text": "Is parking restricted during exam week?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT12",
+      "text": "Thank you for extending the deadline.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT13",
+      "text": "My student card will not open the laboratory door.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT14",
+      "text": "When will grades be released?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT15",
+      "text": "I need to update my name in the portal.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT16",
+      "text": "The video link gives a permission error.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT17",
+      "text": "I am waiting for accessibility confirmation.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT18",
+      "text": "Do we need identification for the field trip?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT19",
+      "text": "This is unrelated to the course materials.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT20",
+      "text": "Okay, noted.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT21",
+      "text": "I have a meeting conflict with the tutorial.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT22",
+      "text": "Could you confirm my form was received?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT23",
+      "text": "The classroom projector is not working.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT24",
+      "text": "I want to leave the mailing list.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT25",
+      "text": "My internet dropped during submission.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT26",
+      "text": "What time does the library close?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT27",
+      "text": "I am only testing the chat.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT28",
+      "text": "Can I submit the lab report as a PDF?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT29",
+      "text": "Please delete my previous draft.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT30",
+      "text": "See you at the seminar.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT31",
+      "text": "I have a question.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": true,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT32",
+      "text": "Is anyone there?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": true,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT33",
+      "text": "Maybe.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": true,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT34",
+      "text": "That is all for now.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": true,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT35",
+      "text": "I forgot my course-site password.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT36",
+      "text": "Can I attend another examination session?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT37",
+      "text": "The schedule room number looks outdated.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT38",
+      "text": "I will be late because of transport.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT39",
+      "text": "Could you add me to the project group?",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    },
+    {
+      "id": "OT40",
+      "text": "No comment.",
+      "gold_intent": "other",
+      "expected_topic": null,
+      "confusion_expressed": false,
+      "incorrect_belief": false,
+      "ambiguous": false,
+      "annotation_rationale": "Administrative, conversational, irrelevant, or incomplete message."
+    }
+  ]
+}
