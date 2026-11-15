@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, Route, Routes, useNavigate, useParams } from "re
 import { api, Course, friendlyError } from "./api";
 import Join from "./pages/Join";
 import Student from "./pages/Student";
+import Consent from "./pages/Consent";
 
 const Topics = lazy(() => import("./pages/Topics"));
 const TopicDetail = lazy(() => import("./pages/TopicDetail"));
@@ -78,5 +79,5 @@ function Layout() {
 }
 
 export default function App() {
-  return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<Courses />} /><Route path="/join/:code" element={<Join />} /><Route path="/student" element={<Student />} /><Route path="/courses/:id" element={<Layout />}><Route index element={<Topics />} /><Route path="topics" element={<Topics />} /><Route path="topics/:topicId" element={<TopicDetail />} /><Route path="quiz" element={<Quiz />} /><Route path="materials" element={<Materials />} /><Route path="setup" element={<TopicsSetup />} /></Route></Routes>;
+  return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<Courses />} /><Route path="/join/:code" element={<Join />} /><Route path="/consent/:code?" element={<Consent />} /><Route path="/student" element={<Student />} /><Route path="/courses/:id" element={<Layout />}><Route index element={<Topics />} /><Route path="topics" element={<Topics />} /><Route path="topics/:topicId" element={<TopicDetail />} /><Route path="quiz" element={<Quiz />} /><Route path="materials" element={<Materials />} /><Route path="setup" element={<TopicsSetup />} /></Route></Routes>;
 }

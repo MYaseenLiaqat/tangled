@@ -39,3 +39,31 @@ def test_material_validation_and_pdf_scan_message(monkeypatch):
         scan = client.post(base, files={"files": ("scan.pdf", b"%PDF-1.7 fake", "application/pdf")}, headers=headers)
         assert scan.status_code == 200
         assert scan.json()[0]["status"] == "processing"
+
+
+def test_material_upload_limit_matches_request_envelope(monkeypatch):
+    with TestClient(app) as client:
+        headers = auth(client, "materials-limit@example.com")
+        course_data = course(client, headers)
+        monkeypatch.setattr("app.routers.courses.FastAPIJobs.enqueue", lambda self, *args, **kwargs: None)
+        response = client.post(
+            f"/api/v1/courses/{course_data['id']}/materials",
+            files={"files": ("notes.txt", b"a" * (1024 * 1024 + 1), "text/plain")},
+            headers=headers,
+        )
+        assert response.status_code == 200
+
+
+def test_material_upload_rejects_file_over_configured_limit(monkeypatch):
+    with TestClient(app) as client:
+        headers = auth(client, "materials-over-limit@example.com")
+        course_data = course(client, headers)
+        monkeypatch.setattr("app.config.settings.max_upload_mb", 1)
+        monkeypatch.setattr("app.config.settings.request_max_bytes", 2_000_000)
+        response = client.post(
+            f"/api/v1/courses/{course_data['id']}/materials",
+            files={"files": ("notes.txt", b"a" * (1024 * 1024 + 1), "text/plain")},
+            headers=headers,
+        )
+        assert response.status_code == 413
+        assert "1 MB" in response.json()["detail"]

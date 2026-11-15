@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     consent_version: str = "2026-10-14"
     enrolled: int = 24
     cors_origins: str = "http://localhost:5173"
-    request_max_bytes: int = 2_000_000
+    request_max_bytes: int = 27_000_000
     trusted_proxy: str = ""
     join_rate_limit_per_min: int = 100
     chat_ip_rate_limit_per_min: int = 120

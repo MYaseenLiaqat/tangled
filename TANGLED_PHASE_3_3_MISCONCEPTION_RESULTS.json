@@ -1,0 +1,404 @@
+{
+  "cases": [
+    {
+      "id": "MP01",
+      "text": "A heavier object must fall faster in a vacuum.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "information",
+      "evidence_phrase": "A heavier object must fall faster in a vacuum.",
+      "error": null,
+      "latency_ms": 2410.2
+    },
+    {
+      "id": "MP02",
+      "text": "The derivative of x squared is x because the exponent disappears.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "confusion",
+      "evidence_phrase": "The derivative of x squared is x because the exponent disappears.",
+      "error": null,
+      "latency_ms": 974.8
+    },
+    {
+      "id": "MP03",
+      "text": "A limit always equals the function value at the point.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "confusion",
+      "evidence_phrase": "A limit always equals the function value at the point.",
+      "error": null,
+      "latency_ms": 938.3
+    },
+    {
+      "id": "MP04",
+      "text": "Integrating a function simply means differentiating it.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "confusion",
+      "evidence_phrase": "Integrating a function simply means differentiating it.",
+      "error": null,
+      "latency_ms": 827.8
+    },
+    {
+      "id": "MP05",
+      "text": "Every continuous function is differentiable.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "information",
+      "evidence_phrase": "Every continuous function is differentiable.",
+      "error": null,
+      "latency_ms": 683.3
+    },
+    {
+      "id": "MP06",
+      "text": "A negative derivative means the function is increasing.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "confusion",
+      "evidence_phrase": "A negative derivative means the function is increasing.",
+      "error": null,
+      "latency_ms": 937.7
+    },
+    {
+      "id": "MP07",
+      "text": "If two events are independent, one cannot affect the other in any context.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "confusion",
+      "evidence_phrase": "If two events are independent, one cannot affect the other in any context.",
+      "error": null,
+      "latency_ms": 838.4
+    },
+    {
+      "id": "MP08",
+      "text": "A function can be differentiable at a jump discontinuity.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "confusion",
+      "evidence_phrase": "A function can be differentiable at a jump discontinuity.",
+      "error": null,
+      "latency_ms": 699.3
+    },
+    {
+      "id": "MP09",
+      "text": "The integral of a positive function is always zero.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "information",
+      "evidence_phrase": "The integral of a positive function is always zero.",
+      "error": null,
+      "latency_ms": 745.3
+    },
+    {
+      "id": "MP10",
+      "text": "Acceleration is exactly the same quantity as velocity.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "confusion",
+      "evidence_phrase": "Acceleration is exactly the same quantity as velocity.",
+      "error": null,
+      "latency_ms": 750.8
+    },
+    {
+      "id": "MP11",
+      "text": "A denominator may be set to zero when the numerator is also zero.",
+      "gold_misconception": true,
+      "predicted_misconception": false,
+      "intent": "other",
+      "evidence_phrase": "A denominator may be set to zero when the numerator is also zero.",
+      "error": null,
+      "latency_ms": 774.1
+    },
+    {
+      "id": "MP12",
+      "text": "Every mutation is harmful to the organism.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "information",
+      "evidence_phrase": "Every mutation is harmful to the organism.",
+      "error": null,
+      "latency_ms": 673.8
+    },
+    {
+      "id": "MP13",
+      "text": "A larger sample always has the exact population mean.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "information",
+      "evidence_phrase": "A larger sample always has the exact population mean.",
+      "error": null,
+      "latency_ms": 798.8
+    },
+    {
+      "id": "MP14",
+      "text": "Correlation proves that one variable caused the other.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "information",
+      "evidence_phrase": "Correlation proves that one variable caused the other.",
+      "error": null,
+      "latency_ms": 789.4
+    },
+    {
+      "id": "MP15",
+      "text": "A necessary condition is sufficient by definition.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "confusion",
+      "evidence_phrase": "A necessary condition is sufficient by definition.",
+      "error": null,
+      "latency_ms": 688.7
+    },
+    {
+      "id": "MP16",
+      "text": "The median and mean must always be identical.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "confusion",
+      "evidence_phrase": "The median and mean must always be identical.",
+      "error": null,
+      "latency_ms": 1482.0
+    },
+    {
+      "id": "MP17",
+      "text": "A catalyst changes the equilibrium constant.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "information",
+      "evidence_phrase": "A catalyst changes the equilibrium constant.",
+      "error": null,
+      "latency_ms": 868.7
+    },
+    {
+      "id": "MP18",
+      "text": "An inner join keeps every row from both tables.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "information",
+      "evidence_phrase": "An inner join keeps every row from both tables.",
+      "error": null,
+      "latency_ms": 653.1
+    },
+    {
+      "id": "MP19",
+      "text": "A sequence converges when it grows without bound.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "other",
+      "evidence_phrase": "A sequence converges when it grows without bound.",
+      "error": null,
+      "latency_ms": 691.2
+    },
+    {
+      "id": "MP20",
+      "text": "Utilitarianism judges an action only by the actor's intentions.",
+      "gold_misconception": true,
+      "predicted_misconception": true,
+      "intent": "information",
+      "evidence_phrase": "Utilitarianism judges an action only by the actor's intentions.",
+      "error": null,
+      "latency_ms": 842.2
+    },
+    {
+      "id": "MN01",
+      "text": "What is the formal definition of a derivative?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "What is the formal definition of a derivative?",
+      "error": null,
+      "latency_ms": 860.4
+    },
+    {
+      "id": "MN02",
+      "text": "Can you show an example of a conditional probability?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "Can you show an example of a conditional probability?",
+      "error": null,
+      "latency_ms": 648.5
+    },
+    {
+      "id": "MN03",
+      "text": "I understand the graph; how do I calculate its slope?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "how do I calculate its slope?",
+      "error": null,
+      "latency_ms": 1091.3
+    },
+    {
+      "id": "MN04",
+      "text": "I am confused about this proof but I do not have a specific incorrect belief.",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "confusion",
+      "evidence_phrase": "I am confused about this proof",
+      "error": null,
+      "latency_ms": 700.6
+    },
+    {
+      "id": "MN05",
+      "text": "What is the difference between mitosis and meiosis?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "What is the difference between mitosis and meiosis?",
+      "error": null,
+      "latency_ms": 789.7
+    },
+    {
+      "id": "MN06",
+      "text": "Could you summarize the role of a control group?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "Could you summarize the role of a control group?",
+      "error": null,
+      "latency_ms": 975.6
+    },
+    {
+      "id": "MN07",
+      "text": "I know the formula; which steps compute the confidence interval?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "which steps compute the confidence interval?",
+      "error": null,
+      "latency_ms": 2669.6
+    },
+    {
+      "id": "MN08",
+      "text": "The explanation was difficult, but I am not asserting anything about the concept.",
+      "gold_misconception": false,
+      "predicted_misconception": null,
+      "intent": null,
+      "evidence_phrase": "",
+      "error": "RateLimitError",
+      "latency_ms": 3135.7
+    },
+    {
+      "id": "MN09",
+      "text": "How does a database inner join work?",
+      "gold_misconception": false,
+      "predicted_misconception": null,
+      "intent": null,
+      "evidence_phrase": "",
+      "error": "RateLimitError",
+      "latency_ms": 3128.9
+    },
+    {
+      "id": "MN10",
+      "text": "Can you define a catalyst?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "Can you define a catalyst?",
+      "error": null,
+      "latency_ms": 1424.8
+    },
+    {
+      "id": "MN11",
+      "text": "I am unsure which variable to hold constant, without claiming a particular answer.",
+      "gold_misconception": false,
+      "predicted_misconception": null,
+      "intent": null,
+      "evidence_phrase": "",
+      "error": "RateLimitError",
+      "latency_ms": 3151.0
+    },
+    {
+      "id": "MN12",
+      "text": "What is the purpose of a recursion base case?",
+      "gold_misconception": false,
+      "predicted_misconception": null,
+      "intent": null,
+      "evidence_phrase": "",
+      "error": "RateLimitError",
+      "latency_ms": 3086.2
+    },
+    {
+      "id": "MN13",
+      "text": "Please give an example of a polar bond.",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "Please give an example of a polar bond.",
+      "error": null,
+      "latency_ms": 806.2
+    },
+    {
+      "id": "MN14",
+      "text": "I understand that correlation is not causation; what test should I use?",
+      "gold_misconception": false,
+      "predicted_misconception": null,
+      "intent": null,
+      "evidence_phrase": "",
+      "error": "RateLimitError",
+      "latency_ms": 3129.9
+    },
+    {
+      "id": "MN15",
+      "text": "How is a sequence's limit defined?",
+      "gold_misconception": false,
+      "predicted_misconception": null,
+      "intent": null,
+      "evidence_phrase": "",
+      "error": "RateLimitError",
+      "latency_ms": 3091.1
+    },
+    {
+      "id": "MN16",
+      "text": "The two diagrams look different; can you explain the distinction?",
+      "gold_misconception": false,
+      "predicted_misconception": null,
+      "intent": null,
+      "evidence_phrase": "",
+      "error": "RateLimitError",
+      "latency_ms": 3237.2
+    },
+    {
+      "id": "MN17",
+      "text": "What is an operating-system kernel?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "What is an operating-system kernel?",
+      "error": null,
+      "latency_ms": 3793.6
+    },
+    {
+      "id": "MN18",
+      "text": "Could you outline a titration procedure?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "Could you outline a titration procedure?",
+      "error": null,
+      "latency_ms": 1968.7
+    },
+    {
+      "id": "MN19",
+      "text": "I believe my answer is correct; can you check the arithmetic?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "can you check the arithmetic?",
+      "error": null,
+      "latency_ms": 711.4
+    },
+    {
+      "id": "MN20",
+      "text": "What are the main ethical theories?",
+      "gold_misconception": false,
+      "predicted_misconception": false,
+      "intent": "information",
+      "evidence_phrase": "What are the main ethical theories?",
+      "error": null,
+      "latency_ms": 1287.1
+    }
+  ]
+}

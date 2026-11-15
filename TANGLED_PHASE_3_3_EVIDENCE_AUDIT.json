@@ -1,0 +1,455 @@
+{
+  "review_method": "Manual rubric review supported by deterministic substring checks; 15 successful cases per class.",
+  "cases": [
+    {
+      "id": "CF01",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "I still cannot tell which force belongs to which object in Newton's third law.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF02",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "My probability answer exceeds one and I cannot find the mistake.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF03",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "The DNA replication diagram is not making sense to me.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF04",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "These graphs seem contradictory even though they describe the same data.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF05",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "I tried balancing the equation repeatedly and the oxygen count keeps changing.",
+      "exact_substring_valid": true,
+      "semantic_support": false,
+      "prediction_correct": true,
+      "review_explanation": "Phrase is text-valid but does not sufficiently establish the reviewed intent."
+    },
+    {
+      "id": "CF06",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "I am lost at the step where the proof reaches its conclusion.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF07",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "I do not understand why the code enters the loop again.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF08",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "I keep getting a negative variance and cannot trace the calculation.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF09",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "Correlation and causation are still unclear to me after class.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF10",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "I cannot follow how the evidence supports the historical claim.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF11",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "I expected the cell to shrink, but the result says it swells; what did I miss?",
+      "exact_substring_valid": true,
+      "semantic_support": false,
+      "prediction_correct": true,
+      "review_explanation": "Phrase is text-valid but does not sufficiently establish the reviewed intent."
+    },
+    {
+      "id": "CF12",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "disagrees with the solution",
+      "exact_substring_valid": true,
+      "semantic_support": false,
+      "prediction_correct": true,
+      "review_explanation": "Phrase is text-valid but does not sufficiently establish the reviewed intent."
+    },
+    {
+      "id": "CF13",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "I thought a heavier object falls faster in a vacuum, so this experiment confuses me.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF14",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "I am unsure which variable should be held constant here.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "CF15",
+      "predicted_intent": "confusion",
+      "gold_intent": "confusion",
+      "evidence_phrase": "The recursive call makes sense once, but not when it returns.",
+      "exact_substring_valid": true,
+      "semantic_support": false,
+      "prediction_correct": true,
+      "review_explanation": "Phrase is text-valid but does not sufficiently establish the reviewed intent."
+    },
+    {
+      "id": "IN01",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "What is the difference between mass and weight?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN02",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "How do I set up conditional probability for two events?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN03",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "Can you give a biological example of a gene regulator?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN05",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "Could you summarize the causes of the French Revolution?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN06",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "Why does a catalyst change reaction rate without being consumed?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN14",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "What does an operating system kernel manage?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN15",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "How do I identify an independent variable?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN16",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "What is the role of a control group?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN17",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "Can you explain natural selection?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN18",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "Which graph compares category distributions?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN19",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "What is a necessary condition in logic?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN20",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "How do I convert a recurrence to matrix form?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN21",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "Can you provide an example of a polar covalent bond?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN22",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "Why is the median sometimes preferred to the mean?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "IN23",
+      "predicted_intent": "information",
+      "gold_intent": "information",
+      "evidence_phrase": "What are the main layers in TCP/IP?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT01",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "Hi, I wanted to say hello before class.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT02",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "Thanks, that announcement helped.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT03",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "Can I change my discussion section?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT04",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "The assignment portal says my enrollment is inactive.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT05",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "What room is the department reception in?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT06",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "I will be away on Thursday.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT07",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "Please resend the calendar invitation.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT08",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "The campus printer took my payment but did not print.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT09",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "Good afternoon.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT10",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "I uploaded a file to the wrong course.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT11",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "Is parking restricted during exam week?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT12",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "Thank you for extending the deadline.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT13",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "My student card will not open the laboratory door.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT14",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "When will grades be released?",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    },
+    {
+      "id": "OT15",
+      "predicted_intent": "other",
+      "gold_intent": "other",
+      "evidence_phrase": "I need to update my name in the portal.",
+      "exact_substring_valid": true,
+      "semantic_support": true,
+      "prediction_correct": true,
+      "review_explanation": "Phrase directly quotes the student wording supporting the reviewed intent."
+    }
+  ]
+}

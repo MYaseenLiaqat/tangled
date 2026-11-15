@@ -1,0 +1,202 @@
+[
+  {
+    "id": "MP01",
+    "text": "A heavier object must fall faster in a vacuum.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP02",
+    "text": "The derivative of x squared is x because the exponent disappears.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP03",
+    "text": "A limit always equals the function value at the point.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP04",
+    "text": "Integrating a function simply means differentiating it.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP05",
+    "text": "Every continuous function is differentiable.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP06",
+    "text": "A negative derivative means the function is increasing.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP07",
+    "text": "If two events are independent, one cannot affect the other in any context.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP08",
+    "text": "A function can be differentiable at a jump discontinuity.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP09",
+    "text": "The integral of a positive function is always zero.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP10",
+    "text": "Acceleration is exactly the same quantity as velocity.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP11",
+    "text": "A denominator may be set to zero when the numerator is also zero.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP12",
+    "text": "Every mutation is harmful to the organism.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP13",
+    "text": "A larger sample always has the exact population mean.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP14",
+    "text": "Correlation proves that one variable caused the other.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP15",
+    "text": "A necessary condition is sufficient by definition.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP16",
+    "text": "The median and mean must always be identical.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP17",
+    "text": "A catalyst changes the equilibrium constant.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP18",
+    "text": "An inner join keeps every row from both tables.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP19",
+    "text": "A sequence converges when it grows without bound.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MP20",
+    "text": "Utilitarianism judges an action only by the actor's intentions.",
+    "gold_misconception": true
+  },
+  {
+    "id": "MN01",
+    "text": "What is the formal definition of a derivative?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN02",
+    "text": "Can you show an example of a conditional probability?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN03",
+    "text": "I understand the graph; how do I calculate its slope?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN04",
+    "text": "I am confused about this proof but I do not have a specific incorrect belief.",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN05",
+    "text": "What is the difference between mitosis and meiosis?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN06",
+    "text": "Could you summarize the role of a control group?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN07",
+    "text": "I know the formula; which steps compute the confidence interval?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN08",
+    "text": "The explanation was difficult, but I am not asserting anything about the concept.",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN09",
+    "text": "How does a database inner join work?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN10",
+    "text": "Can you define a catalyst?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN11",
+    "text": "I am unsure which variable to hold constant, without claiming a particular answer.",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN12",
+    "text": "What is the purpose of a recursion base case?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN13",
+    "text": "Please give an example of a polar bond.",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN14",
+    "text": "I understand that correlation is not causation; what test should I use?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN15",
+    "text": "How is a sequence's limit defined?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN16",
+    "text": "The two diagrams look different; can you explain the distinction?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN17",
+    "text": "What is an operating-system kernel?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN18",
+    "text": "Could you outline a titration procedure?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN19",
+    "text": "I believe my answer is correct; can you check the arithmetic?",
+    "gold_misconception": false
+  },
+  {
+    "id": "MN20",
+    "text": "What are the main ethical theories?",
+    "gold_misconception": false
+  }
+]
