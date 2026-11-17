@@ -13,6 +13,6 @@ export default function Consent() {
       <li>Your questions are processed by an AI provider to provide answers.</li>
       <li>Contact your instructor to ask for removal of your data.</li>
     </ul>
-    <Link className="btn primary" to={code ? `/join/${code}` : "/"}>Return to join</Link>
+    <Link className="btn primary" to={code ? `/join/${code}` : "/join"}>Return to join</Link>
   </section></main>;
 }

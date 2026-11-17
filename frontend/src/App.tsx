@@ -44,6 +44,7 @@ function Auth() {
         {error && <p className="error" role="alert">{error}</p>}
       </form>
       <button type="button" className="text-button" onClick={() => setRegistering(!registering)}>{registering ? "Already have an account? Log in" : "New to Tangled? Create an account"}</button>
+      <p className="student-entry">Are you a student? <Link to="/join">Join your course with a code →</Link></p>
     </section>
   </main>;
 }
@@ -85,5 +86,5 @@ function Layout() {
 }
 
 export default function App() {
-  return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<RequireToken kind="instructor"><Courses /></RequireToken>} /><Route path="/join/:code" element={<Join />} /><Route path="/consent/:code?" element={<Consent />} /><Route path="/student" element={<RequireToken kind="student"><Student /></RequireToken>} /><Route path="/courses/:id" element={<RequireToken kind="instructor"><Layout /></RequireToken>}><Route index element={<Topics />} /><Route path="topics" element={<Topics />} /><Route path="topics/:topicId" element={<TopicDetail />} /><Route path="quiz" element={<Quiz />} /><Route path="materials" element={<Materials />} /><Route path="setup" element={<TopicsSetup />} /></Route></Routes>;
+  return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<RequireToken kind="instructor"><Courses /></RequireToken>} /><Route path="/join/:code?" element={<Join />} /><Route path="/consent/:code?" element={<Consent />} /><Route path="/student" element={<RequireToken kind="student"><Student /></RequireToken>} /><Route path="/courses/:id" element={<RequireToken kind="instructor"><Layout /></RequireToken>}><Route index element={<Topics />} /><Route path="topics" element={<Topics />} /><Route path="topics/:topicId" element={<TopicDetail />} /><Route path="quiz" element={<Quiz />} /><Route path="materials" element={<Materials />} /><Route path="setup" element={<TopicsSetup />} /></Route></Routes>;
 }

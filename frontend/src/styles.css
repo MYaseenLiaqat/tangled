@@ -5,3 +5,9 @@
 .sources{margin:12px 0;padding:10px 12px;background:var(--bg);border-radius:8px;color:var(--mute);font-size:13px}.sources b{color:var(--ink)}.sources ul{margin:5px 0 0;padding-left:22px}
 
 .answer{line-height:1.6}.answer p{margin:8px 0}.answer ul,.answer ol{margin:6px 0 10px;padding-left:22px}.answer li{margin:3px 0}.answer code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:.92em}
+
+.code-input{font:700 22px ui-monospace,Consolas,monospace;letter-spacing:.35em;text-align:center;text-transform:uppercase}
+.consent-check{display:flex!important;grid-template-columns:none;align-items:flex-start;gap:10px;font-weight:500!important;line-height:1.45}
+.consent-check input{width:18px;height:18px;margin-top:2px;flex:none}
+.student-entry{margin:6px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:14px;color:var(--mute)}
+.student-entry a{color:var(--acc);font-weight:700}
