@@ -23,7 +23,7 @@ describe("dashboard", () => {
   it("displays API masking such as fewer than 5 without calculating a smaller count", async () => {
     vi.mocked(api.insights).mockResolvedValue({ summary: { questions: "fewer than 5", students_asking: "fewer than 5", enrolled: 20, needs_attention: 1 }, flagged: [{ id: 1, name: "Foundations", module: "Module 1", share: .2, confidence: "Medium", students_confused: "fewer than 5", confusion_messages: "fewer than 5", status: "review", signals: [], evidence_phrases: [] }], not_flagged: [] });
     render(<MemoryRouter initialEntries={["/courses/1/topics"]}><Routes><Route path="/courses/:id/topics" element={<Topics />} /></Routes></MemoryRouter>);
-    await waitFor(() => expect(screen.getByText("fewer than 5")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getAllByText("fewer than 5").length).toBeGreaterThan(0));
     expect(screen.queryByText("4")).not.toBeInTheDocument();
   });
 

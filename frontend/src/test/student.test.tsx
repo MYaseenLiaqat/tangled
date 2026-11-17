@@ -108,3 +108,18 @@ describe("answer formatting", () => {
     expect(container.querySelector(".answer img")).toBeNull();
   });
 });
+
+describe("grouped citations", () => {
+  beforeEach(() => { cleanup(); vi.clearAllMocks(); vi.mocked(api.studentMaterials).mockResolvedValue([]); });
+
+  it("renders [1, 2] as separate citations and drops unknown numbers", async () => {
+    vi.mocked(api.studentMessages).mockResolvedValue([{
+      message_id: 4, question: "Q", answer: "Too large diverges [1, 2, 7].",
+      sources: [{ n: 1, material: "a.pdf", section: "p. 1" }, { n: 2, material: "b.md", section: "text" }],
+    }]);
+    const { container } = render(<Student />);
+    expect(await screen.findByText(/Too large diverges/)).toBeInTheDocument();
+    expect(Array.from(container.querySelectorAll(".answer sup")).map(s => s.textContent)).toEqual(["[1]", "[2]"]);
+    expect(container.querySelector(".answer")?.textContent).not.toContain("7");
+  });
+});

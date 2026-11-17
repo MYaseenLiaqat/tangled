@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     llm_base_url: str | None = None
     llm_model: str = "gpt-4o-mini"
     llm_timeout: float = 30.0
-    llm_max_retries: int = 1
+    llm_max_retries: int = 3   # the client backs off on 429/5xx; free-tier keys rate-limit bursts of questions
     min_similarity: float = 0.25
     rag_top_k: int = 4
     topic_margin: float = 0.05   # topics this close to the best passage score are tie-broken by the question
