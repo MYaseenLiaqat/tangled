@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 import json
 import logging
@@ -7,11 +8,13 @@ import uuid
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import text
 from .config import settings
 from .db import engine, migrate
 from .routers import auth, courses, student
+from .services import analysis
 
 
 class JsonFormatter(logging.Formatter):
@@ -20,9 +23,14 @@ class JsonFormatter(logging.Formatter):
                            "logger": record.name, "request_id": getattr(record, "request_id", None)})
 
 
-logging.basicConfig(level=logging.INFO, handlers=[logging.StreamHandler()])
-for handler in logging.getLogger().handlers:
+def configure_logging() -> None:
+    """JSON logs at INFO. Re-applied after migrations, because alembic.ini resets the root logger."""
+    handler = logging.StreamHandler()
     handler.setFormatter(JsonFormatter())
+    logging.basicConfig(level=logging.INFO, handlers=[handler], force=True)
+
+
+configure_logging()
 logger = logging.getLogger("tangled")
 
 
@@ -30,7 +38,12 @@ logger = logging.getLogger("tangled")
 async def lifespan(_: FastAPI):
     settings.validate_runtime()
     migrate()
+    configure_logging()
+    sweeper = (asyncio.create_task(analysis.retry_loop())
+               if settings.analysis_retry_interval_s > 0 else None)
     yield
+    if sweeper:
+        sweeper.cancel()
 
 
 app = FastAPI(title="Tangled API", version="0.1.0", lifespan=lifespan)
@@ -81,6 +94,35 @@ def health_ready():
     return {"ok": True}
 
 
+class SPAStaticFiles(StaticFiles):
+    """Serve the built frontend; unknown page routes (e.g. /join/ABC123) get index.html.
+
+    React Router owns those URLs, so a direct visit or refresh must load the app instead of a 404.
+    API, health and docs paths, and missing asset files (anything with an extension), still 404.
+    """
+    API_PREFIXES = ("api/", "health/", "docs", "redoc", "openapi.json")
+
+    async def get_response(self, path: str, scope):
+        try:
+            response = await super().get_response(path, scope)
+        except StarletteHTTPException as exc:
+            if exc.status_code != 404:
+                raise
+            response = None
+        if response is not None and response.status_code != 404:
+            return response
+        clean = path.replace("\\", "/").lstrip("/")  # Starlette passes an OS path (backslashes on Windows)
+        if clean.startswith(self.API_PREFIXES) or "." in clean.rsplit("/", 1)[-1]:
+            raise StarletteHTTPException(status_code=404)
+        return await super().get_response("index.html", scope)
+
+
+def mount_frontend(target: FastAPI, directory: str) -> bool:
+    if not os.path.isfile(os.path.join(directory, "index.html")):
+        return False
+    target.mount("/", SPAStaticFiles(directory=directory, html=True), name="frontend")
+    return True
+
+
 frontend_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
-if os.path.isdir(frontend_dist):
-    app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="frontend")
+mount_frontend(app, frontend_dist)

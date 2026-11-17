@@ -1,5 +1,5 @@
 import { FormEvent, lazy, Suspense, useEffect, useState } from "react";
-import { Link, NavLink, Outlet, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { Link, NavLink, Navigate, Outlet, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { api, Course, friendlyError } from "./api";
 import Join from "./pages/Join";
 import Student from "./pages/Student";
@@ -10,6 +10,11 @@ const TopicDetail = lazy(() => import("./pages/TopicDetail"));
 const Quiz = lazy(() => import("./pages/Quiz"));
 const Materials = lazy(() => import("./pages/CourseMaterials"));
 const TopicsSetup = lazy(() => import("./pages/TopicsSetup"));
+
+function RequireToken({ kind, children }: { kind: "instructor" | "student"; children: JSX.Element }) {
+  const key = kind === "instructor" ? "instructor_token" : "student_token";
+  return localStorage.getItem(key) ? children : <Navigate to="/" replace />;
+}
 
 function Auth() {
   const navigate = useNavigate();
@@ -26,6 +31,7 @@ function Auth() {
     } catch (error) { setError(friendlyError(error, "We could not sign you in. Check your details and try again.")); }
     finally { setBusy(false); }
   }
+
   return <main className="auth-page">
     <div className="auth-brand"><span className="brand-mark">t</span><span>Tangled</span></div>
     <section className="auth-card"><p className="eyebrow">Instructor workspace</p>
@@ -72,12 +78,12 @@ function Layout() {
   return <div className="shell"><aside className="side">
     <Link className="logo" to="/courses"><span className="brand-mark">t</span><span>Tangled</span></Link><p className="side-label">Course workspace</p>
     <NavLink to={`/courses/${id}/topics`}><span>◈</span> Overview</NavLink><NavLink to={`/courses/${id}/quiz`}><span>▤</span> Quiz results</NavLink><NavLink to={`/courses/${id}/materials`}><span>□</span> Materials</NavLink><NavLink to={`/courses/${id}/setup`}><span>⚙</span> Topic setup</NavLink>
-    <div className="side-spacer" /><Link to="/courses"><span>←</span> All courses</Link>
+    <div className="side-spacer" /><button className="text-button" onClick={() => { localStorage.removeItem("instructor_token"); window.location.assign("/"); }}>Log out</button><Link to="/courses"><span>←</span> All courses</Link>
   </aside><div className="wrap"><header className="top"><div><span className="breadcrumb">Course workspace / </span><strong>{course.name}</strong></div><div className="top-actions"><span className="top-note">Instructor view</span><span className="avatar">I</span></div></header>
     <main><Suspense fallback={<div className="state"><p>Loading page…</p></div>}><Outlet /></Suspense></main>
   </div></div>;
 }
 
 export default function App() {
-  return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<Courses />} /><Route path="/join/:code" element={<Join />} /><Route path="/consent/:code?" element={<Consent />} /><Route path="/student" element={<Student />} /><Route path="/courses/:id" element={<Layout />}><Route index element={<Topics />} /><Route path="topics" element={<Topics />} /><Route path="topics/:topicId" element={<TopicDetail />} /><Route path="quiz" element={<Quiz />} /><Route path="materials" element={<Materials />} /><Route path="setup" element={<TopicsSetup />} /></Route></Routes>;
+  return <Routes><Route path="/" element={<Auth />} /><Route path="/courses" element={<RequireToken kind="instructor"><Courses /></RequireToken>} /><Route path="/join/:code" element={<Join />} /><Route path="/consent/:code?" element={<Consent />} /><Route path="/student" element={<RequireToken kind="student"><Student /></RequireToken>} /><Route path="/courses/:id" element={<RequireToken kind="instructor"><Layout /></RequireToken>}><Route index element={<Topics />} /><Route path="topics" element={<Topics />} /><Route path="topics/:topicId" element={<TopicDetail />} /><Route path="quiz" element={<Quiz />} /><Route path="materials" element={<Materials />} /><Route path="setup" element={<TopicsSetup />} /></Route></Routes>;
 }

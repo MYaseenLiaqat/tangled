@@ -18,7 +18,7 @@ export default function CourseMaterials() {
       <input hidden type="file" multiple accept=".pdf,.pptx,.docx,.ipynb,.md,.txt" onChange={async event => {
         if (!event.target.files?.length) return;
         setBusy(true);
-        try { await api.uploadMaterials(id, event.target.files); setError(""); load(); } catch (err) { setError(friendlyError(err)); } finally { setBusy(false); }
+        try { await api.uploadMaterials(id, event.target.files); setError(""); await load(); } catch (err) { setError(friendlyError(err)); } finally { setBusy(false); }
       }} />
     </label>
     {error && <p className="error" role="alert">{error}</p>}

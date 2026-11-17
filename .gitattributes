@@ -1,0 +1,2 @@
+# Test fixtures must stay byte-exact (PDF offsets, Office zips)
+e2e/samples/** binary

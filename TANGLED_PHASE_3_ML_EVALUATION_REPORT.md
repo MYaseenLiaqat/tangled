@@ -810,3 +810,71 @@ re-run the independent evaluation with a rate-limit-safe provider budget,
 finalize the misconception confusion matrix, improve topic-assignment
 coverage for ambiguous/low-similarity messages, and obtain independent
 annotation or human review.
+
+## Phase 3.4 — Real-World Classifier Validation
+
+### Evaluation status
+
+**NOT VERIFIED**
+
+Evidence source: **NOT VERIFIED**.
+
+Phase 3.4 required genuinely human-written student messages from an
+authorized, consented, and anonymized source. No such dataset was available in
+the repository or provided for this evaluation. The repository's available
+classification artifacts are synthetic evaluation data from Phases 3.1–3.3;
+they were not relabelled or presented as real-world data.
+
+No private student conversations were accessed, no identifying data was
+collected, and no real-world messages were sent to the configured provider.
+The frozen Phase 3.2 classifier was not modified.
+
+### Prepared artifacts
+
+The following artifacts document the blocked evaluation and provide empty
+schemas for a future authorized run:
+
+- [TANGLED_PHASE_3_4_DATASET.json](./TANGLED_PHASE_3_4_DATASET.json)
+- [TANGLED_PHASE_3_4_ANNOTATIONS.json](./TANGLED_PHASE_3_4_ANNOTATIONS.json)
+- [TANGLED_PHASE_3_4_RESULTS.json](./TANGLED_PHASE_3_4_RESULTS.json)
+- [TANGLED_PHASE_3_4_EVIDENCE_AUDIT.json](./TANGLED_PHASE_3_4_EVIDENCE_AUDIT.json)
+
+All four artifacts intentionally contain zero real messages and null metrics.
+They must not be interpreted as a completed real-world validation.
+
+### Missing evidence
+
+The following Phase 3.4 results are **NOT VERIFIED**:
+
+- Accuracy, per-class precision/recall/F1, macro-F1, weighted-F1, and
+  confusion matrix on human-written messages.
+- Information-to-confusion and other-to-confusion false-positive rates.
+- Human-annotated misconception precision, recall, F1, specificity, and
+  false-positive rate.
+- Human-message evidence phrase semantic support.
+- Human-message topic assignment quality.
+- Generalization beyond synthetic evaluation sets.
+
+Existing synthetic results remain valid only as synthetic evidence:
+Phase 3.3 completed 90/120 predictions with 30 provider rate-limit failures,
+and its completed-case metrics must not be combined with or substituted for
+Phase 3.4.
+
+### Annotation protocol for a future authorized run
+
+Use the same rubric as Phase 3.2 and independently label each authorized,
+de-identified message for primary class (`confusion`, `information`, or
+`other`), misconception, relevant topic, supporting evidence, confidence, and
+ambiguity. Prefer two annotators, calculate Cohen's kappa before adjudication,
+and retain disagreements and adjudication decisions. Do not send the source
+dataset to an external provider until authorization explicitly covers that
+processing.
+
+### Phase 3.4 verdict
+
+**NOT VERIFIED.**
+
+Phase 4 must not claim real-world classifier reliability based on the
+synthetic Phase 3 results. A future Phase 3.4 rerun requires an authorized
+human-message dataset, documented consent/anonymization, independent human
+annotation, and a rate-limit-safe evaluation budget.

@@ -1,0 +1,7 @@
+{
+  "status": "NOT VERIFIED",
+  "source_type": "authorized_human_messages_required",
+  "record_count": 0,
+  "records": [],
+  "limitation": "No authorized, consented, anonymized human-written student-message dataset was available in the repository or provided for this evaluation. Existing evaluation records are synthetic and were not reused as real-world data."
+}

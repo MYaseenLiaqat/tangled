@@ -1,9 +1,11 @@
 import asyncio
+import json
 import logging
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from openai import APIError, APITimeoutError
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
+import jwt
+from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Query, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from sqlmodel import Session, select
@@ -45,7 +47,8 @@ def join_info(code: str, s: Session = Depends(session)):
 
 
 @router.post("/join")
-def join(body: JoinIn, request: Request, s: Session = Depends(session)):
+def join(body: JoinIn, request: Request, authorization: str = Header(default=""),
+         s: Session = Depends(session)):
     enforce(f"join:{client_ip(request)}", settings.join_rate_limit_per_min)
     if not body.consent:
         raise HTTPException(400, "Consent is required")
@@ -54,6 +57,18 @@ def join(body: JoinIn, request: Request, s: Session = Depends(session)):
         raise HTTPException(404, "Course not found")
     if not course.joining_open:
         raise HTTPException(403, "Joining is closed")
+    if authorization.startswith("Bearer "):
+        try:
+            payload = jwt.decode(authorization[7:], settings.jwt_secret, algorithms=["HS256"])
+            if payload.get("role") == "student" and int(payload["course_id"]) == course.id:
+                existing = s.exec(select(Student).where(
+                    Student.id == int(payload["student_id"]),
+                    Student.course_id == course.id)).first()
+                if existing:
+                    return {"access_token": authorization[7:], "token_type": "bearer",
+                            "course_id": course.id, "course_name": course.name}
+        except (jwt.PyJWTError, KeyError, TypeError, ValueError):
+            pass
     student = Student(course_id=course.id, consent_version=settings.consent_version)
     s.add(student)
     s.commit()
@@ -129,7 +144,8 @@ async def chat(body: ChatIn, background: BackgroundTasks,
     except (APIError, APITimeoutError, ConnectionError, TimeoutError):
         raise HTTPException(503, "The tutor is temporarily unavailable. Please try again.")
     message = Message(course_id=st.course_id, student_id=st.id, session_id=body.session_id,
-                      text=body.text, answer=answer, concept_id=concept.id if concept else None,
+                      text=body.text, answer=answer, sources_json=json.dumps(sources),
+                      concept_id=concept.id if concept else None,
                       similarity=similarity, intent="" if concept else "gap")
     s.add(message)
     s.commit()
@@ -148,8 +164,17 @@ def messages(st: Student = Depends(current_student), s: Session = Depends(sessio
     rows = s.exec(select(Message).where(Message.student_id == st.id,
                                         Message.course_id == st.course_id)
                  .order_by(Message.created_at)).all()
-    return [{"message_id": row.id, "question": row.text, "answer": row.answer,
-             "feedback": row.feedback} for row in rows]
+    result = []
+    for row in rows:
+        try:
+            sources = json.loads(row.sources_json or "[]")
+        except (TypeError, ValueError):
+            sources = []
+        if not isinstance(sources, list):
+            sources = []
+        result.append({"message_id": row.id, "question": row.text, "answer": row.answer,
+                       "feedback": row.feedback, "sources": sources})
+    return result
 
 
 @router.post("/feedback")

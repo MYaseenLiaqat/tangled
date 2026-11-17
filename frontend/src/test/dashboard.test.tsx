@@ -9,7 +9,7 @@ import TopicsSetup from "../pages/TopicsSetup";
 
 vi.mock("../api", async () => {
   const actual = await vi.importActual<typeof import("../api")>("../api");
-  return { ...actual, api: { insights: vi.fn(), topic: vi.fn(), quiz: vi.fn(), importQuiz: vi.fn(), topicList: vi.fn(), createTopic: vi.fn(), updateTopic: vi.fn(), deleteTopic: vi.fn() } };
+  return { ...actual, api: { insights: vi.fn(), topic: vi.fn(), quiz: vi.fn(), importQuiz: vi.fn(), topicList: vi.fn(), createTopic: vi.fn(), updateTopic: vi.fn(), deleteTopic: vi.fn(), course: vi.fn(), updateCourse: vi.fn(), regenerateCode: vi.fn(), deleteCourse: vi.fn() } };
 });
 
 describe("dashboard", () => {
@@ -48,6 +48,7 @@ describe("dashboard", () => {
   });
 
   it("renders the topic setup list and empty state", async () => {
+    vi.mocked(api.course).mockResolvedValue({ id: 1, name: "Course", join_code: "ABC123", join_link: "/join/ABC123", joining_open: true });
     vi.mocked(api.topicList).mockResolvedValueOnce([{ id: 1, name: "Foundations", module_label: "Module 1", description: "Core foundations." }]);
     render(<MemoryRouter initialEntries={["/courses/1/setup"]}><Routes><Route path="/courses/:id/setup" element={<TopicsSetup />} /></Routes></MemoryRouter>);
     expect(await screen.findByText("Foundations")).toBeInTheDocument();

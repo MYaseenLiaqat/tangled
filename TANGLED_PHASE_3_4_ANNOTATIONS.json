@@ -1,0 +1,20 @@
+{
+  "status": "NOT VERIFIED",
+  "annotator_count": 0,
+  "cohen_kappa": null,
+  "records": [],
+  "protocol": {
+    "primary_class": ["confusion", "information", "other"],
+    "misconception": ["yes", "no"],
+    "required_fields": [
+      "message_id",
+      "gold_intent",
+      "gold_misconception",
+      "topic",
+      "evidence",
+      "annotation_confidence",
+      "ambiguous"
+    ]
+  },
+  "limitation": "Human annotation was not started because no authorized human-written dataset was available."
+}

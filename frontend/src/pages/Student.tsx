@@ -1,38 +1,40 @@
 import { FormEvent, useEffect, useState } from "react";
 import { api, StudentSource } from "../api";
+import { friendlyError } from "../utils/errors";
+import { renderAnswer } from "../utils/answer";
 
 function validSources(sources: StudentSource[] | undefined): StudentSource[] {
   return (sources || []).filter(source => Number.isInteger(source.n) && source.n > 0 &&
     Boolean(source.material || source.section));
 }
 
-function answerWithValidCitations(answer: string, sources: StudentSource[]) {
-  const sourceNumbers = new Set(sources.map(source => source.n));
-  return answer.split(/(\[\d+\])/g).map((part, index) => {
-    const match = part.match(/^\[(\d+)\]$/);
-    if (!match) return part;
-    const number = Number(match[1]);
-    return sourceNumbers.has(number) ? <sup key={`${number}-${index}`}>[{number}]</sup> : "";
-  });
-}
-
 export default function Student() {
   const [materials, setMaterials] = useState<any[]>([]);
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   const [feedbackBusy, setFeedbackBusy] = useState<number | null>(null);
   const [feedbackError, setFeedbackError] = useState<number | null>(null);
   const [sessionId] = useState(() => crypto.randomUUID());
   useEffect(() => {
-    api.studentMaterials().then(setMaterials).catch(() => setMaterials([]));
-    api.studentMessages().then(rows => setMessages(rows)).catch(() => setMessages([]));
+    Promise.all([api.studentMaterials(), api.studentMessages()])
+      .then(([loadedMaterials, loadedMessages]) => { setMaterials(loadedMaterials); setMessages(loadedMessages); setError(""); })
+      .catch(err => setError(friendlyError(err, "We could not load your course. Please sign in again.")))
+      .finally(() => setLoading(false));
   }, []);
   async function ask(event: FormEvent) {
     event.preventDefault();
     if (!text.trim()) return;
-    const question = text; setText("");
-    const result = await api.chat(question, sessionId);
-    setMessages(old => [...old, { ...result, question, feedback: "" }]);
+    const question = text.trim(); setText(""); setBusy(true); setError("");
+    try {
+      const result = await api.chat(question, sessionId);
+      setMessages(old => [...old, { ...result, question, feedback: "" }]);
+    } catch (err) {
+      setText(question);
+      setError(friendlyError(err, "The tutor is temporarily unavailable. Please try again."));
+    } finally { setBusy(false); }
   }
   async function setFeedback(messageId: number, value: string) {
     setFeedbackBusy(messageId); setFeedbackError(null);
@@ -40,13 +42,15 @@ export default function Student() {
     catch { setFeedbackError(messageId); }
     finally { setFeedbackBusy(null); }
   }
+  if (loading) return <main className="state"><p>Loading your course…</p></main>;
   return <main className="landing student-page"><div className="page-heading"><div><p className="eyebrow">Student workspace</p><h1>Course tutor</h1><p className="lead">Ask questions grounded in your course materials.</p></div><span className="pill">Anonymous by design</span></div><p className="privacy-note">Your identity is not shown to your instructor; results are combined with other students.</p>
-    <section className="panel student-card"><h2>Course materials</h2><p className="note">Open a document to read it while you work through a question.</p><div className="doc-grid">{materials.map(m => <article className="doc-card" key={m.id}>{m.file_url ? <a href={m.file_url} target="_blank" rel="noopener noreferrer">{m.filename}</a> : <b>{m.filename}</b>}<small>{m.status}</small></article>)}</div></section>
-    <section className="panel student-card"><h2>Ask a question</h2><p className="note">Tangled answers from the materials and cites the relevant sources.</p><form className="student-form" onSubmit={ask}><textarea aria-label="Your question" value={text} maxLength={1000} onChange={e => setText(e.target.value)} placeholder="What would you like to understand?" /><button className="btn primary">Ask Tangled</button></form>
+    {error && <p className="error" role="alert">{error}</p>}
+    <section className="panel student-card"><h2>{localStorage.getItem("student_course_name") || "Course materials"}</h2><p className="note">Open a document to read it while you work through a question.</p>{materials.length === 0 ? <p className="note">Your instructor has not indexed any materials yet.</p> : <div className="doc-grid">{materials.map(m => <article className="doc-card" key={m.id}>{m.file_url ? <a href={m.file_url} target="_blank" rel="noopener noreferrer">{m.filename}</a> : <b>{m.filename}</b>}<small>{m.status}</small></article>)}</div>}</section>
+    <section className="panel student-card"><h2>Ask a question</h2><p className="note">Tangled answers from the materials and cites the relevant sources.</p><form className="student-form" onSubmit={ask}><textarea aria-label="Your question" value={text} maxLength={1000} onChange={e => setText(e.target.value)} placeholder="What would you like to understand?" disabled={busy} /><button className="btn primary" disabled={busy || !text.trim()}>{busy ? "Thinking…" : "Ask Tangled"}</button></form>
       {messages.map(m => {
         const sources = validSources(m.sources);
         return <article key={m.message_id}><p><b>You:</b> {m.question || ""}</p>
-        <p>{answerWithValidCitations(m.answer || "", sources)}</p>
+        {renderAnswer(m.answer || "", sources.map(source => source.n))}
         {sources.length > 0 && <div className="sources"><b>Sources</b><ul>{sources.map(source =>
           <li key={`${m.message_id}-${source.n}`}>[{source.n}] {source.material || "Course material"}{source.section ? ` — ${source.section}` : ""}</li>
         )}</ul></div>}
