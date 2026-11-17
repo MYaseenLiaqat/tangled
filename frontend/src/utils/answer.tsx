@@ -5,14 +5,17 @@ import { ReactNode } from "react";
  * headings, **bold**, *italic*, `code`) plus [n] citations. Builds React elements only, never HTML
  * strings, so model output cannot inject markup. Citations that don't match a known source are dropped.
  */
-const INLINE = /(\*\*[^*\n]+\*\*|__[^_\n]+__|`[^`\n]+`|\[\d+\]|\*[^*\s][^*\n]*\*|_[^_\s][^_\n]*_)/g;
+const INLINE = /(\*\*[^*\n]+\*\*|__[^_\n]+__|`[^`\n]+`|\[\d+(?:\s*,\s*\d+)*\]|\*[^*\s][^*\n]*\*|_[^_\s][^_\n]*_)/g;
 
 function inline(text: string, sources: Set<number>, keyPrefix: string): ReactNode[] {
   return text.split(INLINE).map((part, index): ReactNode => {
     const key = `${keyPrefix}-${index}`;
     if (!part) return null;
-    const citation = part.match(/^\[(\d+)\]$/);
-    if (citation) return sources.has(Number(citation[1])) ? <sup key={key}>[{citation[1]}]</sup> : null;
+    // [1] or grouped [1, 2]: one superscript per known source, unknown numbers dropped.
+    if (/^\[\d+(?:\s*,\s*\d+)*\]$/.test(part)) {
+      const known = part.slice(1, -1).split(",").map(n => Number(n.trim())).filter(n => sources.has(n));
+      return known.length ? <span className="cites" key={key}>{known.map(n => <sup key={`${key}-${n}`}>[{n}]</sup>)}</span> : null;
+    }
     if (/^(\*\*|__).+(\*\*|__)$/.test(part)) return <strong key={key}>{inline(part.slice(2, -2), sources, key)}</strong>;
     if (/^`.+`$/.test(part)) return <code key={key}>{part.slice(1, -1)}</code>;
     if (/^[*_].+[*_]$/.test(part)) return <em key={key}>{inline(part.slice(1, -1), sources, key)}</em>;

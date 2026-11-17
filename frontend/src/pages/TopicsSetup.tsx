@@ -1,8 +1,11 @@
 import { FormEvent, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { api, Course, friendlyError, TopicListItem } from "../api";
+import { Icon } from "../ui/Icon";
+import { Bar, ConfirmDialog, CopyButton, Empty, ListSkeleton, Toast } from "../ui/kit";
 
 type FormValues = { name: string; module_label: string; description: string };
+type Pending = { kind: "topic"; topic: TopicListItem } | { kind: "regenerate" } | { kind: "course" } | null;
 
 const emptyForm: FormValues = { name: "", module_label: "", description: "" };
 
@@ -20,6 +23,7 @@ export default function TopicsSetup() {
   const [courseName, setCourseName] = useState("");
   const [classSize, setClassSize] = useState("");
   const [courseSaving, setCourseSaving] = useState(false);
+  const [pending, setPending] = useState<Pending>(null);
 
   async function load() {
     setLoading(true);
@@ -81,7 +85,6 @@ export default function TopicsSetup() {
   }
 
   async function remove(topic: TopicListItem) {
-    if (!window.confirm(`Delete "${topic.name}"? This removes the topic association from related analysis data and indexed material tags.`)) return;
     setDeleting(topic.id);
     setError("");
     setStatus("");
@@ -98,86 +101,136 @@ export default function TopicsSetup() {
   }
 
   async function saveCourse(event: FormEvent) {
-      event.preventDefault();
-      setCourseSaving(true);
-      setError("");
-      setStatus("");
-      try {
-        const updated = await api.updateCourse(id, {
-          name: courseName,
-          class_size: classSize ? Number(classSize) : null,
-          joining_open: course?.joining_open ?? true,
-        });
-        setCourse(updated);
-        setStatus("Course settings saved.");
-      } catch (err) {
-        setError(friendlyError(err));
-      } finally {
-        setCourseSaving(false);
-      }
+    event.preventDefault();
+    setCourseSaving(true);
+    setError("");
+    setStatus("");
+    try {
+      const updated = await api.updateCourse(id, {
+        name: courseName,
+        class_size: classSize ? Number(classSize) : null,
+        joining_open: course?.joining_open ?? true,
+      });
+      setCourse(updated);
+      setStatus("Course settings saved.");
+    } catch (err) {
+      setError(friendlyError(err));
+    } finally {
+      setCourseSaving(false);
     }
+  }
 
   async function regenerateCode() {
-      if (!window.confirm("Generate a new join code? Existing links will stop working.")) return;
-      setCourseSaving(true);
-      setError("");
-      try {
-        setCourse(await api.regenerateCode(id));
-        setStatus("Join code regenerated.");
-      } catch (err) {
-        setError(friendlyError(err));
-      } finally {
-        setCourseSaving(false);
-      }
+    setCourseSaving(true);
+    setError("");
+    try {
+      setCourse(await api.regenerateCode(id));
+      setStatus("Join code regenerated.");
+    } catch (err) {
+      setError(friendlyError(err));
+    } finally {
+      setCourseSaving(false);
     }
+  }
 
-  async function deleteCourse() {
-      if (!course || !window.confirm(`Delete "${course.name}" and all of its data?`)) return;
-      const confirmation = window.prompt(`Type "${course.name}" to confirm deletion.`);
-      if (confirmation === null) return;
-      setCourseSaving(true);
-      setError("");
-      try {
-        await api.deleteCourse(id, confirmation);
-        window.location.assign("/courses");
-      } catch (err) {
-        setError(friendlyError(err));
-        setCourseSaving(false);
-      } finally {
-        setCourseSaving(false);
-      }
+  async function deleteCourse(confirmation: string) {
+    if (!course) return;
+    setCourseSaving(true);
+    setError("");
+    try {
+      await api.deleteCourse(id, confirmation);
+      window.location.assign("/courses");
+    } catch (err) {
+      setError(friendlyError(err));
+    } finally {
+      setCourseSaving(false);
     }
+  }
 
-  return <main>
-    <p><Link to={`/courses/${id}`}>Back to course</Link></p>
-    <h1>Topics</h1>
-    <p className="note">Set up the concepts your course tracks. {topics.length}/10 topics.</p>
-    {error && <p className="error" role="alert">{error}</p>}
-    <p className="success" aria-live="polite">{status}</p>
-    {course && <section className="panel">
-      <h2>Course settings</h2>
-      <form className="form" onSubmit={saveCourse}>
-        <label>Course name<input required value={courseName} onChange={event => setCourseName(event.target.value)} /></label>
-        <label>Class size (optional)<input type="number" min="1" value={classSize} onChange={event => setClassSize(event.target.value)} /></label>
-        <label><input type="checkbox" checked={course.joining_open} onChange={event => setCourse(current => current ? { ...current, joining_open: event.target.checked } : current)} /> Allow new students to join</label>
-        <div><button className="btn primary" disabled={courseSaving}>{courseSaving ? "Saving…" : "Save settings"}</button>{" "}
-          <button type="button" className="btn" disabled={courseSaving} onClick={regenerateCode}>Regenerate join code</button></div>
-      </form>
-      <p className="note">Current join code: <b>{course.join_code}</b> · Share link: <code>{course.join_link}</code></p>
-      <button type="button" className="btn danger" disabled={courseSaving} onClick={deleteCourse}>Delete course</button>
-    </section>}
-    <form className="panel form" onSubmit={submit}>
-      <h2>{editing === null ? "Add a topic" : "Edit topic"}</h2>
-      <input required placeholder="Topic name" value={form.name} onChange={event => updateField("name", event.target.value)} />
-      <input required placeholder="Module label" value={form.module_label} onChange={event => updateField("module_label", event.target.value)} />
-      <input required placeholder="One-sentence description" value={form.description} onChange={event => updateField("description", event.target.value)} />
-      <div><button className="btn primary" disabled={saving || (editing === null && topics.length >= 10)}>{saving ? "Saving…" : editing === null ? "Add topic" : "Save changes"}</button>{editing !== null && <button type="button" className="btn" disabled={saving} onClick={cancelEdit}>Cancel</button>}</div>
-    </form>
-    {loading ? <div className="state"><p>Loading topics…</p></div> : topics.length === 0 ? <div className="empty panel">No topics yet.<small>Add the first topic above so Tangled can organise course questions.</small></div> :
-      <div className="card-grid">{topics.map(topic => <article className="topic-card" key={topic.id}>
-        <h3>{topic.name}</h3><p className="note">{topic.module_label}</p><p>{topic.description}</p>
-        <button className="btn" disabled={saving || deleting === topic.id} onClick={() => startEdit(topic)}>Edit</button>{" "}
-        <button className="btn" disabled={saving || deleting === topic.id} onClick={() => remove(topic)}>{deleting === topic.id ? "Deleting…" : "Delete"}</button>
-      </article>)}</div>}
-  </main>;
+  function confirmPending(typed: string) {
+    const action = pending;
+    setPending(null);
+    if (action?.kind === "topic") remove(action.topic);
+    if (action?.kind === "regenerate") regenerateCode();
+    if (action?.kind === "course") deleteCourse(typed);
+  }
+
+  const full = editing === null && topics.length >= 10;
+  const joinUrl = course ? `${window.location.origin}${course.join_link}` : "";
+
+  return <>
+    <div className="page-head"><div><p className="eyebrow">Setup</p><h1>Topic setup</h1><p className="lead">Set up the concepts your course tracks, and how students join.</p></div></div>
+    {error && <p className="alert" role="alert" style={{ marginBottom: 16 }}><Icon name="alert" />{error}</p>}
+
+    <div className="setup-grid">
+      <div style={{ display: "grid", gap: 20, minWidth: 0 }}>
+        <section className="card">
+          <div className="card-head" style={{ padding: "18px 20px", borderBottom: "1px solid var(--line)", alignItems: "center" }}>
+            <div><h2>Topics</h2><p className="note" style={{ marginTop: 2 }}>Tangled sorts every student question into one of these.</p></div>
+            <span className="counter"><Bar value={topics.length / 10} label={`${topics.length} of 10 topics`} />{`${topics.length}/10`}</span>
+          </div>
+          {loading ? <div style={{ padding: 20 }}><ListSkeleton rows={2} label="Loading topics…" /></div> : topics.length === 0 ?
+            <div style={{ padding: 20 }}><Empty icon="overview" title="No topics yet.">Add the first topic below so Tangled can organise course questions.</Empty></div> :
+            <div className="topic-list">{topics.map(topic => <article className={`topic-item${editing === topic.id ? " editing" : ""}`} key={topic.id}>
+              <div style={{ minWidth: 0 }}><h3 className="truncate" title={topic.name}>{topic.name}</h3><span className="card-meta">{topic.module_label}</span><p>{topic.description}</p></div>
+              <div style={{ display: "flex", gap: 6, flex: "none" }}>
+                <button className="btn btn-sm" disabled={saving || deleting === topic.id} onClick={() => startEdit(topic)}><Icon name="edit" />Edit</button>
+                <button className="btn btn-sm btn-danger" disabled={saving || deleting === topic.id} onClick={() => setPending({ kind: "topic", topic })}>{deleting === topic.id ? "Deleting…" : <><Icon name="trash" />Delete</>}</button>
+              </div>
+            </article>)}</div>}
+        </section>
+
+        <form className="card card-pad form" onSubmit={submit}>
+          <div><h2>{editing === null ? "Add a topic" : "Edit topic"}</h2><p className="note" style={{ marginTop: 2 }}>Use the exact names your quiz CSV uses, so scores link up.</p></div>
+          <div className="field-row">
+            <label className="field">Topic name<input required placeholder="e.g. Gradient descent" value={form.name} onChange={event => updateField("name", event.target.value)} /></label>
+            <label className="field">Module label<input required placeholder="e.g. Module 1 · Optimisation" value={form.module_label} onChange={event => updateField("module_label", event.target.value)} /></label>
+          </div>
+          <label className="field">Description<span className="field-hint">One sentence; Tangled uses it to match questions to this topic.</span><input required placeholder="e.g. Learning rate, gradients and optimisation by gradient descent." value={form.description} onChange={event => updateField("description", event.target.value)} /></label>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <button className="btn btn-primary" disabled={saving || full}>{saving ? "Saving…" : editing === null ? <><Icon name="plus" />Add topic</> : "Save changes"}</button>
+            {editing !== null && <button type="button" className="btn btn-ghost" disabled={saving} onClick={cancelEdit}>Cancel</button>}
+            {full && <span className="note">You've reached the 10-topic limit.</span>}
+          </div>
+        </form>
+      </div>
+
+      {course && <aside className="setup-side">
+        <section className="card card-pad share-card">
+          <div><h3>Share with students</h3><p className="note" style={{ marginTop: 2 }}>Students join anonymously with this code. No accounts needed.</p></div>
+          <div className="join-code" aria-label={`Join code ${course.join_code}`}>{course.join_code}</div>
+          <div className="share-actions"><CopyButton text={joinUrl} label="Copy link" /><CopyButton text={course.join_code} label="Copy code" /></div>
+          <p className="note truncate" title={joinUrl}><code>{course.join_link}</code></p>
+          <button type="button" className="btn btn-ghost btn-sm" style={{ justifySelf: "start" }} disabled={courseSaving} onClick={() => setPending({ kind: "regenerate" })}><Icon name="refresh" />Regenerate join code</button>
+        </section>
+
+        <section className="card card-pad">
+          <h3>Course settings</h3>
+          <form className="form" style={{ marginTop: 14 }} onSubmit={saveCourse}>
+            <label className="field">Course name<input required value={courseName} onChange={event => setCourseName(event.target.value)} /></label>
+            <label className="field">Class size<span className="field-hint">Optional. Used to show what share of the class is confused.</span><input type="number" min="1" value={classSize} onChange={event => setClassSize(event.target.value)} /></label>
+            <label className="switch">Allow new students to join<input type="checkbox" role="switch" checked={course.joining_open} onChange={event => setCourse(current => current ? { ...current, joining_open: event.target.checked } : current)} /></label>
+            <button className="btn btn-primary" disabled={courseSaving}>{courseSaving ? "Saving…" : "Save settings"}</button>
+          </form>
+        </section>
+
+        <section className="card card-pad danger-zone">
+          <h3>Danger zone</h3>
+          <p className="note" style={{ margin: "4px 0 12px" }}>Deleting a course removes its topics, materials, questions and insights for good.</p>
+          <button type="button" className="btn btn-danger" disabled={courseSaving} onClick={() => setPending({ kind: "course" })}><Icon name="trash" />Delete course</button>
+        </section>
+      </aside>}
+    </div>
+
+    <ConfirmDialog open={pending?.kind === "topic"} danger title="Delete this topic?" confirmLabel="Delete topic"
+      body={<p>{pending?.kind === "topic" ? `"${pending.topic.name}" will be removed. Questions linked to it lose their topic, and material tags are rebuilt.` : ""}</p>}
+      onConfirm={confirmPending} onCancel={() => setPending(null)} />
+    <ConfirmDialog open={pending?.kind === "regenerate"} title="Generate a new join code?" confirmLabel="Regenerate"
+      body={<p>Existing join links and the current code will stop working. Students who already joined keep their access.</p>}
+      onConfirm={confirmPending} onCancel={() => setPending(null)} />
+    <ConfirmDialog open={pending?.kind === "course"} danger title="Delete this course?" confirmLabel="Delete course" requireText={course?.name}
+      body={<p>This permanently deletes all of its data, including student questions and insights. It cannot be undone.</p>}
+      onConfirm={confirmPending} onCancel={() => setPending(null)} />
+    <Toast message={status} onDone={() => setStatus("")} />
+  </>;
 }
