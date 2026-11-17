@@ -30,14 +30,16 @@ export default function Join() {
     try {
       const result = await api.join(joinCode.trim());
       localStorage.setItem("student_token", result.access_token);
+      localStorage.setItem("student_course_name", result.course_name);
       navigate("/student");
     } catch (err) { setError(friendlyError(err, "We could not join that course. Check the code and try again.")); checkbox.current?.focus(); }
   }
+  const closed = course && !course.joining_open;
   return <main className="landing"><form className="panel" onSubmit={submit}>
-    <h1>Join course</h1>{course && <p>Joining <b>{course.name}</b>.</p>}<p>This is anonymous. Your questions are shared with the instructor only in combined form.</p>
+    <h1>Join course</h1>{course && <p>Joining <b>{course.name}</b>.</p>}{closed && <p className="bad" role="alert">Joining is closed for this course.</p>}<p>This is anonymous. Your questions are shared with the instructor only in combined form.</p>
     <label>Course code<input value={joinCode} maxLength={6} onChange={e => setJoinCode(e.target.value.toUpperCase())} /></label>
     <label><input ref={checkbox} type="checkbox" checked={consent} onChange={e => { setConsent(e.target.checked); if (e.target.checked) setError(""); }} /> I consent to the data use described in the <a href={`/consent/${code}`}>consent notice</a>.</label>
     {error && <p className="bad" role="alert">{error}</p>}
-    <button className="btn p">Join</button>
+    <button className="btn p" disabled={Boolean(closed)}>Join</button>
   </form></main>;
 }

@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { api, friendlyError, TopicListItem } from "../api";
+import { api, Course, friendlyError, TopicListItem } from "../api";
 
 type FormValues = { name: string; module_label: string; description: string };
 
@@ -16,6 +16,10 @@ export default function TopicsSetup() {
   const [deleting, setDeleting] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
+  const [course, setCourse] = useState<Course | null>(null);
+  const [courseName, setCourseName] = useState("");
+  const [classSize, setClassSize] = useState("");
+  const [courseSaving, setCourseSaving] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -30,6 +34,13 @@ export default function TopicsSetup() {
   }
 
   useEffect(() => { load(); }, [id]);
+  useEffect(() => {
+    api.course(id).then(value => {
+      setCourse(value);
+      setCourseName(value.name);
+      setClassSize(value.class_size ? String(value.class_size) : "");
+    }).catch(err => setError(friendlyError(err)));
+  }, [id]);
 
   function updateField(field: keyof FormValues, value: string) {
     setForm(current => ({ ...current, [field]: value }));
@@ -86,12 +97,75 @@ export default function TopicsSetup() {
     }
   }
 
+  async function saveCourse(event: FormEvent) {
+      event.preventDefault();
+      setCourseSaving(true);
+      setError("");
+      setStatus("");
+      try {
+        const updated = await api.updateCourse(id, {
+          name: courseName,
+          class_size: classSize ? Number(classSize) : null,
+          joining_open: course?.joining_open ?? true,
+        });
+        setCourse(updated);
+        setStatus("Course settings saved.");
+      } catch (err) {
+        setError(friendlyError(err));
+      } finally {
+        setCourseSaving(false);
+      }
+    }
+
+  async function regenerateCode() {
+      if (!window.confirm("Generate a new join code? Existing links will stop working.")) return;
+      setCourseSaving(true);
+      setError("");
+      try {
+        setCourse(await api.regenerateCode(id));
+        setStatus("Join code regenerated.");
+      } catch (err) {
+        setError(friendlyError(err));
+      } finally {
+        setCourseSaving(false);
+      }
+    }
+
+  async function deleteCourse() {
+      if (!course || !window.confirm(`Delete "${course.name}" and all of its data?`)) return;
+      const confirmation = window.prompt(`Type "${course.name}" to confirm deletion.`);
+      if (confirmation === null) return;
+      setCourseSaving(true);
+      setError("");
+      try {
+        await api.deleteCourse(id, confirmation);
+        window.location.assign("/courses");
+      } catch (err) {
+        setError(friendlyError(err));
+        setCourseSaving(false);
+      } finally {
+        setCourseSaving(false);
+      }
+    }
+
   return <main>
     <p><Link to={`/courses/${id}`}>Back to course</Link></p>
     <h1>Topics</h1>
     <p className="note">Set up the concepts your course tracks. {topics.length}/10 topics.</p>
     {error && <p className="error" role="alert">{error}</p>}
     <p className="success" aria-live="polite">{status}</p>
+    {course && <section className="panel">
+      <h2>Course settings</h2>
+      <form className="form" onSubmit={saveCourse}>
+        <label>Course name<input required value={courseName} onChange={event => setCourseName(event.target.value)} /></label>
+        <label>Class size (optional)<input type="number" min="1" value={classSize} onChange={event => setClassSize(event.target.value)} /></label>
+        <label><input type="checkbox" checked={course.joining_open} onChange={event => setCourse(current => current ? { ...current, joining_open: event.target.checked } : current)} /> Allow new students to join</label>
+        <div><button className="btn primary" disabled={courseSaving}>{courseSaving ? "Saving…" : "Save settings"}</button>{" "}
+          <button type="button" className="btn" disabled={courseSaving} onClick={regenerateCode}>Regenerate join code</button></div>
+      </form>
+      <p className="note">Current join code: <b>{course.join_code}</b> · Share link: <code>{course.join_link}</code></p>
+      <button type="button" className="btn danger" disabled={courseSaving} onClick={deleteCourse}>Delete course</button>
+    </section>}
     <form className="panel form" onSubmit={submit}>
       <h2>{editing === null ? "Add a topic" : "Edit topic"}</h2>
       <input required placeholder="Topic name" value={form.name} onChange={event => updateField("name", event.target.value)} />

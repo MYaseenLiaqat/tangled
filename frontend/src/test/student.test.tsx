@@ -82,3 +82,29 @@ describe("student citations", () => {
     expect(screen.getByRole("link", { name: "Return to join" })).toHaveAttribute("href", "/join/ABC123");
   });
 });
+
+describe("answer formatting", () => {
+  beforeEach(() => {
+    cleanup();
+    vi.clearAllMocks();
+    vi.mocked(api.studentMaterials).mockResolvedValue([]);
+  });
+
+  it("renders markdown lists and bold text instead of raw symbols", async () => {
+    vi.mocked(api.studentMessages).mockResolvedValue([{
+      message_id: 3,
+      question: "Learning rate?",
+      answer: "The learning rate sets the step size [1].\n\n- If it is **too large**, the loss diverges [1].\n- If it is too small, training is slow [9].\n\n<img src=x onerror=alert(1)>",
+      sources: [{ n: 1, material: "notes.pdf", section: "p. 1" }],
+    }]);
+
+    const { container } = render(<Student />);
+
+    expect(await screen.findByText("too large")).toBeInTheDocument();
+    expect(screen.getByText("too large").tagName).toBe("STRONG");
+    expect(container.querySelectorAll(".answer li")).toHaveLength(2);
+    expect(container.querySelector(".answer")?.textContent).not.toContain("**");
+    expect(container.querySelector(".answer")?.textContent).not.toContain("[9]");
+    expect(container.querySelector(".answer img")).toBeNull();
+  });
+});

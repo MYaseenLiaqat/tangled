@@ -153,6 +153,7 @@ async def analyze(message_id: int) -> None:
             return
         job.status = "pending"
         job.attempts += 1
+        job.updated_at = datetime.now(timezone.utc)
         s.add(job)
         s.commit()
         topic = _topic_for(message, s)
@@ -189,3 +190,44 @@ async def analyze(message_id: int) -> None:
     except Exception as exc:
         logger.warning("analysis job failed job_message_id=%s error_type=%s", message_id, type(exc).__name__)
         _save_failed(job_id, message_id, type(exc).__name__)
+
+
+def _aware(value: datetime) -> datetime:
+    return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+
+
+def due_for_retry(job: AnalysisJob, now: datetime) -> bool:
+    """Retry failed or stuck jobs with exponential backoff: 30 s, 60 s, 120 s, ... after the last attempt.
+
+    Pending jobs are only retried once they look abandoned (e.g. the server restarted mid-analysis).
+    """
+    if job.status not in ("pending", "failed") or job.attempts >= settings.analysis_max_retries:
+        return False
+    if job.status == "pending" and job.attempts == 0:
+        return True
+    wait = settings.analysis_retry_base_s * (2 ** max(job.attempts - 1, 0))
+    return (now - _aware(job.updated_at)).total_seconds() >= wait
+
+
+async def retry_due_jobs(now: datetime | None = None) -> int:
+    """Run analysis again for every job that is due. Returns how many were retried."""
+    now = now or datetime.now(timezone.utc)
+    with Session(engine) as s:
+        jobs = s.exec(select(AnalysisJob).where(AnalysisJob.status.in_(["pending", "failed"]),
+                                                AnalysisJob.attempts < settings.analysis_max_retries)).all()
+        ids = [job.message_id for job in jobs if due_for_retry(job, now)]
+    for message_id in ids:
+        await analyze(message_id)
+    if ids:
+        logger.info("analysis retry sweep retried=%d", len(ids))
+    return len(ids)
+
+
+async def retry_loop() -> None:
+    """Background sweeper started with the app, so rate-limited analyses recover on their own."""
+    while True:
+        await asyncio.sleep(settings.analysis_retry_interval_s)
+        try:
+            await retry_due_jobs()
+        except Exception as exc:  # never let the sweeper die
+            logger.warning("analysis retry sweep failed error_type=%s", type(exc).__name__)

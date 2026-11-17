@@ -1,0 +1,62 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1396 >>
+stream
+BT
+/F1 11 Tf
+14 TL
+50 780 Td
+(Course summary) Tj T*
+() Tj T*
+(Gradient descent is an optimisation algorithm that minimises a loss function by repeatedly) Tj T*
+(moving the parameters in the direction of the negative gradient.) Tj T*
+() Tj T*
+(The learning rate controls the step size. If the learning rate is too large the loss can) Tj T*
+(diverge or oscillate; if it is too small, training converges very slowly.) Tj T*
+() Tj T*
+(Stochastic gradient descent \(SGD\) estimates the gradient from one example or a mini-batch,) Tj T*
+(which makes each step cheaper but noisier. Momentum averages past gradients to smooth the) Tj T*
+(updates.) Tj T*
+() Tj T*
+(A model with high bias underfits: it is too simple and has high training error.) Tj T*
+() Tj T*
+(A model with high variance overfits: it has low training error but high test error.) Tj T*
+() Tj T*
+(Regularisation such as L2 weight decay or dropout reduces variance by penalising complex) Tj T*
+(models. Cross-validation estimates generalisation error.) Tj T*
+() Tj T*
+(Precision is the fraction of predicted positives that are truly positive.) Tj T*
+() Tj T*
+(Recall is the fraction of actual positives that the model finds.) Tj T*
+() Tj T*
+(The F1 score is the harmonic mean of precision and recall. On imbalanced data accuracy can) Tj T*
+(be misleading, because always predicting the majority class gives high accuracy.) Tj T*
+() Tj T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1759
+%%EOF

@@ -6,7 +6,7 @@ Install Docker Engine and the Compose plugin, then clone this repository on the 
 
 ## 2. Configure secrets
 
-Copy `backend/.env.example` to `.env`. Set `ENV=prod`, a random `JWT_SECRET` of at least 32 characters, a valid `LLM_API_KEY`, and `CORS_ORIGINS` for the public origin. Keep `.env` out of version control.
+Copy `backend/.env.example` to `backend/.env` (Docker Compose reads it from there). Set `ENV=prod`, a **new** random `JWT_SECRET` of at least 32 characters (`python -c "import secrets;print(secrets.token_urlsafe(48))"`; never reuse a value that has been in git), a valid `LLM_API_KEY`, and `CORS_ORIGINS` for the public origin. Keep `.env` out of version control.
 
 ## 3. Start the service
 

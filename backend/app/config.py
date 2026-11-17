@@ -20,7 +20,9 @@ class Settings(BaseSettings):
     rag_top_k: int = 4
     llm_json_mode: Literal["auto", "on", "off"] = "auto"
     llm_max_concurrency: int = 4
-    analysis_max_retries: int = 3
+    analysis_max_retries: int = 6
+    analysis_retry_interval_s: float = 30.0   # 0 disables the background retry sweeper
+    analysis_retry_base_s: float = 30.0
     max_evidence_phrase_chars: int = 120
     max_quiz_import_mb: int = 5
     intent_backend: str = "llm"    # llm | logreg

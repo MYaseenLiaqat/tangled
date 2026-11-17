@@ -1,7 +1,7 @@
 services:
   app:
     build: .
-    env_file: .env
+    env_file: backend/.env
     environment:
       TRUSTED_PROXY: 172.16.0.0/12
     volumes:

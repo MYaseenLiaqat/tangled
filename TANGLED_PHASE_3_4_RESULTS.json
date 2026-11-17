@@ -1,0 +1,11 @@
+{
+  "status": "NOT VERIFIED",
+  "classifier_version": "phase3.2_prompt_revision",
+  "real_provider_evaluation": false,
+  "dataset_size": 0,
+  "successful_predictions": 0,
+  "provider_failures": 0,
+  "metrics": null,
+  "confusion_matrix": null,
+  "limitation": "No real-world classification request was made. Synthetic Phase 3.2 and Phase 3.3 results remain separate and are not represented as human-data validation."
+}

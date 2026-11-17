@@ -39,18 +39,27 @@ as a possible **material gap**, never as confusion. The rules live in `app/servi
 
 ```bash
 # backend
-cd backend && python -m venv .venv && source .venv/bin/activate
+cd backend
+python -m venv .venv
+# Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+# macOS/Linux:
+# source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env          # set LLM_API_KEY and TEACHER_TOKEN
-python seed.py                # concepts + 24 student codes (printed once)
+cp .env.example .env          # set LLM_API_KEY and a JWT_SECRET
 uvicorn app.main:app --reload # API docs: http://localhost:8000/docs
 
 # frontend (new terminal)
 cd frontend && npm install && npm run dev   # http://localhost:5173
 ```
 
-Instructor: open the app, enter `TEACHER_TOKEN`, upload materials, then import quiz results (CSV: `item,concept,student_code,answer,correct`).
-Students: enter their code. Tests: `cd backend && pytest`.
+Instructor: register or log in, create a course, add topics, upload materials, and import aggregate quiz results
+(CSV: `item,concept,option,count,correct`). Share the generated join link or six-character code with students.
+Students: open the join link or enter the course code, accept consent, and ask questions.
+Tests: `cd backend && pytest -q`; frontend tests: `cd frontend && npm run test`.
+
+For the container deployment, copy `backend/.env.example` to `backend/.env`, configure the values, then run
+`docker compose up --build`. Docker Compose reads `backend/.env` and the entrypoint runs migrations before starting the API.
 
 ## Evidence that it works (what you present)
 

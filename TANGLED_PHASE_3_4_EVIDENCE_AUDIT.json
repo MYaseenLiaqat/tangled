@@ -1,0 +1,9 @@
+{
+  "status": "NOT VERIFIED",
+  "reviewed_predictions": 0,
+  "evidence_coverage": null,
+  "exact_substring_validity": null,
+  "semantic_support_accuracy": null,
+  "records": [],
+  "limitation": "Evidence review of real human-written messages was not performed because no authorized dataset was available."
+}

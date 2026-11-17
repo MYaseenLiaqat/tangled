@@ -1,0 +1,9 @@
+item,concept,option,count,correct
+Q1,Gradient descent,A,4,true
+Q1,Gradient descent,B,9,false
+Q1,Gradient descent,C,3,false
+Q2,Bias-variance,A,10,true
+Q2,Bias-variance,B,6,false
+Q3,Evaluation metrics,A,13,true
+Q3,Evaluation metrics,B,3,false
+Q4,Unknown topic,A,5,true

@@ -54,6 +54,7 @@ class Message(SQLModel, table=True):
     session_id: str = ""
     text: str
     answer: str = ""
+    sources_json: str = "[]"
     concept_id: int | None = Field(default=None, foreign_key="concept.id", index=True)
     similarity: float = 0.0
     intent: str = ""          # confusion | information | other | gap ("" = not yet analysed)
