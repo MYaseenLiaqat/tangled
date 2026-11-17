@@ -126,9 +126,13 @@ async def chat(body: ChatIn, background: BackgroundTasks,
     enforce_rate_limit(st, s)
     hits = await asyncio.to_thread(rag.retrieve, st.course_id, body.text)
     similarity = hits[0]["sim"] if hits else 0.0
-    topic_key = rag.topic_of(hits)
-    concept = s.exec(select(Concept).where(Concept.course_id == st.course_id,
-                                             Concept.key == topic_key)).first() if topic_key else None
+    course_topics = s.exec(select(Concept).where(Concept.course_id == st.course_id)).all()
+
+    def tie_break(keys: list[str]) -> str | None:
+        return rag.closest_topic(body.text, [topic for topic in course_topics if topic.key in keys])
+
+    topic_key = await asyncio.to_thread(rag.topic_of, hits, tie_break)
+    concept = next((topic for topic in course_topics if topic.key == topic_key), None)
     if rag.grounding_refused(hits):
         message = Message(course_id=st.course_id, student_id=st.id, session_id=body.session_id,
                           text=body.text, answer=rag.REFUSAL, concept_id=None,

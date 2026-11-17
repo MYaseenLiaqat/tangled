@@ -1,16 +1,23 @@
 from pathlib import Path
+import threading
 from ..config import settings
+
+# Upload jobs run in parallel worker threads. Chroma's client setup is not thread-safe, so two
+# jobs building a client at the same moment (first upload after a restart) fail with
+# KeyError / "'RustBindingsAPI' object has no attribute 'bindings'". Serialise construction.
+_init_lock = threading.RLock()
 
 
 class ChromaVectorStore:
     def __init__(self):
-        Path(settings.embedding_cache_dir).mkdir(parents=True, exist_ok=True)
-        from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
-        from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
-        import chromadb
-        ONNXMiniLM_L6_V2.DOWNLOAD_PATH = Path(settings.embedding_cache_dir) / "all-MiniLM-L6-v2"
-        self.collection = chromadb.PersistentClient(path=settings.chroma_dir).get_or_create_collection(
-            "materials", embedding_function=DefaultEmbeddingFunction(), metadata={"hnsw:space": "cosine"})
+        with _init_lock:
+            Path(settings.embedding_cache_dir).mkdir(parents=True, exist_ok=True)
+            from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
+            from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
+            import chromadb
+            ONNXMiniLM_L6_V2.DOWNLOAD_PATH = Path(settings.embedding_cache_dir) / "all-MiniLM-L6-v2"
+            self.collection = chromadb.PersistentClient(path=settings.chroma_dir).get_or_create_collection(
+                "materials", embedding_function=DefaultEmbeddingFunction(), metadata={"hnsw:space": "cosine"})
 
     def add(self, ids, documents, embeddings, metadatas):
         self.collection.add(ids=ids, documents=documents, embeddings=embeddings, metadatas=metadatas)

@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     llm_max_retries: int = 1
     min_similarity: float = 0.25
     rag_top_k: int = 4
+    topic_margin: float = 0.05   # topics this close to the best passage score are tie-broken by the question
     llm_json_mode: Literal["auto", "on", "off"] = "auto"
     llm_max_concurrency: int = 4
     analysis_max_retries: int = 6
