@@ -8,6 +8,10 @@ results table at the end.
 Steps marked **KNOWN ISSUE** are already known to fail or to look wrong. Confirm them, but don't treat
 them as new bugs.
 
+> **Fast path:** `e2e/api_smoke.py` runs sections 1–12 through the API in about 4 minutes and prints
+> PASS/FAIL per step (see section 1b). Run it first. Then do the browser walk-through below for what a
+> script can't judge: layout, wording, formatting, mobile and the feel of the product.
+
 ---
 
 ## 0. Where to look
@@ -67,6 +71,19 @@ This writes test files to `e2e/samples/`: 5 good course files in different forma
 | ☐ | http://localhost:5173 | Tangled instructor login page |
 
 > Use **http://localhost:5173** for sections 2–11. Section 12 tests the production setup on :8000.
+>
+> If uvicorn says `[Errno 10048] ... only one usage of each socket address`, another server already
+> holds port 8000. Stop it, or use `--port 8010` and change the proxy target in `frontend/vite.config.ts`
+> to match.
+
+### 1b. Automated API run (optional but recommended)
+
+With the backend running and the sample files generated:
+```powershell
+backend\.venv\Scripts\python e2e\api_smoke.py                  # add --skip-class to skip section 9 (saves ~40 LLM calls)
+```
+Expect `82/82 passed` (verified 2026-11-17 on a fresh server with Gemini). It creates its own uniquely named instructors, so you can rerun it on the same database. Afterwards, `e2e/inspect_db.py`
+shows everything it stored.
 
 ---
 
@@ -119,7 +136,7 @@ Upload from `e2e/samples/`. The **first** upload can take 20–60 s, because the
 | ✓ | Do | Expected | If wrong, check |
 |---|---|---|---|
 | ☐ | Upload `01_gradient_descent.md` | A row appears with status **processing**, then turns **indexed** (the page polls every 3 s). The Sections column shows a number | `inspect_db.py`, Materials table |
-| ☐ | Upload `02_bias_variance.docx`, `03_evaluation_metrics.pptx`, `04_course_summary.pdf` and `05_clustering.ipynb` together (multi-select) | All 5 files end up **indexed**, with kinds Markdown, Word, PowerPoint, PDF and Notebook | The error text under the filename |
+| ☐ | Upload `02_bias_variance.docx`, `03_evaluation_metrics.pptx`, `04_course_summary.pdf` and `05_clustering.ipynb` together (multi-select). Best done **right after starting the backend**, which is the hardest case | All 5 files end up **indexed**, with kinds Markdown, Word, PowerPoint, PDF and Notebook. *(Fixed 2026-11-17: on a fresh server, parallel uploads used to fail some files with `'RustBindingsAPI' object has no attribute 'bindings'` or a `KeyError` naming the chroma folder)* | The error text under the filename |
 | ☐ | Upload `bad_scanned_no_text.pdf` | Status becomes **failed**, with the reason "This PDF has no selectable text. It may be a scan." | |
 | ☐ | Upload `bad_fake.pdf` | Rejected straight away: "File content does not match its extension" | 400 in Network |
 | ☐ | Upload `bad_unsupported.exe`. In the file picker, choose "All files" first | "Unsupported file type: .exe" | 400 |
@@ -198,7 +215,14 @@ Wait about 30 s after it finishes.
 
 | ✓ | Do | Expected | If wrong, check |
 |---|---|---|---|
-| ☐ | Instructor window: **Overview** (refresh) | Summary counts go up. **Gradient descent** appears under *Topics needing attention*, marked **Review**, with a % of students and a confidence level | `inspect_db.py`: the confusion messages are on the Gradient descent topic (`concept_id`) with confidence ≥ 0.7 |
+| ☐ | Instructor window: **Overview** (refresh) | Summary counts go up. **Gradient descent** appears under *Topics needing attention*, marked **Review**, with a % of students and a confidence level. **No other topic is flagged** | `inspect_db.py`: the Messages table's `concept_id` column. All the learning-rate questions should be on Gradient descent (`concept_id` = 1); "What is precision?" on Evaluation metrics, "What is DBSCAN?" on Clustering |
+
+> **Topic attribution (fixed 2026-11-17).** It used to add up similarity over the top 4 retrieved chunks, so
+> weak, unrelated chunks outvoted the best match, and a one-page summary covering every topic got a single tag.
+> With all 5 sample files, nothing was flagged. Now each chunk is tagged with every topic it covers (sentence
+> by sentence), each topic scores its single best chunk, and near-ties are settled by comparing the question
+> with the topic descriptions. Materials indexed before this fix keep working; run
+> `python -m app.cli retag` (in `backend/`) to give them the new tags.
 | ☐ | Type `bias` in **Search topics** | "No topics match your search" (only flagged topics are listed) | |
 | ☐ | Other topics | **KNOWN ISSUE:** topics that aren't flagged are not shown anywhere, although the API returns them | |
 | ☐ | Click **View details** | The detail page loads in about 2–10 s. "Why Tangled flagged this" shows ✓ quiz correct rate below threshold and ✓ at least 3 students asked more than once. "What students are confused about" shows groups with highlighted quotes | |
@@ -268,8 +292,8 @@ DevTools, then the device toolbar (Ctrl+Shift+M), then *iPhone 12* or similar:
 ## 14. Automated suites (run last)
 
 ```powershell
-cd backend; .\.venv\Scripts\python -m pytest -q        # expect 44 passed
-cd ..\frontend; npm run test                           # expect 10 passed
+cd backend; .\.venv\Scripts\python -m pytest -q        # expect 56 passed
+cd ..\frontend; npm run test                           # expect 11 passed
 npm run build                                          # expect "built in …"
 ```
 
@@ -292,6 +316,8 @@ Stop both servers, then delete `backend/data/e2e/` to discard all test data. You
 | 5 | Medium | Topics that aren't flagged are hidden; the dashboard looks empty until 4+ students are confused | 9 |
 | 6 | Medium | No landing page; no copyable full join URL or QR code | 3, 11 |
 | 7 | ~~Medium~~ **Fixed 2026-11-17** | App and request logs were silenced at startup | 0 |
+| 9 | ~~High~~ **Fixed 2026-11-17** | Uploading several files right after a server start failed some of them (a ChromaDB setup race between parallel jobs) | 5 |
+| 10 | ~~High~~ **Fixed 2026-11-17** | Topic attribution summed similarity over the top 4 chunks, so weak, unrelated chunks outvoted the best match, and multi-topic chunks got one tag. Confusion landed on the wrong topics, and nothing was flagged | 9 |
 | 8 | Low | Markdown and text citations say "text"; no chat memory; PDF link expires after 5 minutes; group title, duplicate quote and highlight glitches; no logout on the course list; login rate limit is shared by everyone behind nginx | 2, 8, 9 |
 
 ## Results
@@ -299,6 +325,7 @@ Stop both servers, then delete `backend/data/e2e/` to discard all test data. You
 | Section | Pass / Fail | Notes |
 |---|---|---|
 | 1 Setup | | |
+| 1b Automated API run | | |
 | 2 Instructor account | | |
 | 3 Courses | | |
 | 4 Topics | | |

@@ -86,11 +86,45 @@ def ingest(path: Path, course_id: int, material_id: int, concepts: list) -> int:
     if not docs:
         return 0
     emb = np.array(rag.ef()(docs), dtype=float)
-    if concepts:  # tag each chunk with its nearest course concept (cosine)
-        cv = np.array(rag.ef()([f"{c.name}. {c.description}" for c in concepts]), dtype=float)
-        sims = (emb / np.linalg.norm(emb, axis=1, keepdims=True)) @ (cv / np.linalg.norm(cv, axis=1, keepdims=True)).T
-        for i, m in enumerate(metas):
-            j = int(sims[i].argmax())
-            m["topic_key"] = concepts[j].key if sims[i, j] >= settings.min_similarity else ""
+    if concepts:
+        for m, keys in zip(metas, tag_chunks(docs, emb, concepts)):
+            m["topic_key"] = keys[0] if keys else ""   # main topic (kept for older readers)
+            m["topic_keys"] = ",".join(keys)           # every topic the chunk covers
     rag.col().add([f"c{course_id}-m{material_id}-{i}" for i in range(len(docs))], docs, emb.tolist(), metas)
     return len(docs)
+
+
+def _unit(matrix: np.ndarray) -> np.ndarray:
+    return matrix / np.linalg.norm(matrix, axis=1, keepdims=True)
+
+
+def sentences(text: str) -> list[str]:
+    parts = re.split(r"(?<=[.!?])\s+|\n+", text)
+    return [part.strip() for part in parts if len(part.strip()) >= 20]
+
+
+def tag_chunks(docs: list[str], emb: np.ndarray, concepts: list) -> list[list[str]]:
+    """Topics each chunk covers, most covered first.
+
+    A chunk can span several topics (a summary page, a long slide), so each sentence votes for its
+    nearest topic. A chunk with no confident sentence falls back to the chunk's own nearest topic.
+    """
+    cv = _unit(np.array(rag.ef()([f"{c.name}. {c.description}" for c in concepts]), dtype=float))
+    chunk_sims = _unit(emb) @ cv.T
+    per_chunk = [sentences(doc) for doc in docs]
+    flat = [sentence for group in per_chunk for sentence in group]
+    sentence_sims = _unit(np.array(rag.ef()(flat), dtype=float)) @ cv.T if flat else np.zeros((0, len(concepts)))
+    tags, row = [], 0
+    for i, group in enumerate(per_chunk):
+        votes: dict[int, float] = {}
+        for sims in sentence_sims[row:row + len(group)]:
+            j = int(sims.argmax())
+            if sims[j] >= settings.min_similarity:
+                votes[j] = votes.get(j, 0.0) + float(sims[j])
+        row += len(group)
+        if not votes:
+            j = int(chunk_sims[i].argmax())
+            if chunk_sims[i, j] >= settings.min_similarity:
+                votes[j] = float(chunk_sims[i, j])
+        tags.append([concepts[j].key for j in sorted(votes, key=votes.get, reverse=True)])
+    return tags
